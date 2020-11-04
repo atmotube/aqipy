@@ -1,4 +1,13 @@
+# coding: utf-8
+
+"""
+    US AQI
+    Source: https://www.airnow.gov/sites/default/files/2018-05/aqi-technical-assistance-document-may2016.pdf
+"""
+
+
 import math
+from aqipy.utils import AQI_NOT_AVAILABLE, __get_aqi_texts
 
 US_AQI = ((0, 50), (51, 100), (101, 150), (151, 200), (201, 300), (301, 500))
 US_OZONE_8H = ((0, 0.054), (0.055, 0.070), (0.071, 0.085), (0.086, 0.105), (0.106, 0.200))
@@ -90,7 +99,6 @@ US_NO2_CAUTIONS = (
     "People with asthma, children and older adults should remain indoors; everyone else should avoid all outdoor exertion."
 )
 
-AQI_NOT_AVAILABLE = -1
 AQI_MIN = -1
 AQI_MAX = len(US_AQI)
 
@@ -111,22 +119,15 @@ def __get_index_data(val: float, array: [[]], max_aqi: int) -> (int, [], []):
     return AQI_MAX, US_AQI[-1], array[-1]
 
 
-def __get_aqi_texts(aqi: int, a1: [], a2: []) -> (str, str):
-    for i in range(len(US_AQI)):
-        if US_AQI[i][0] <= aqi <= US_AQI[i][1]:
-            return a1[i], a2[i]
-    return "", ""
-
-
 def __get_aqi(cp: float, av: [], a1: [], a2: [], max_aqi: int = US_AQI[AQI_MAX - 1][1]) -> (float, str, str):
     t, i, bp = __get_index_data(cp, av, max_aqi)
     if t == AQI_MAX:
-        text1, text2 = __get_aqi_texts(max_aqi, a1, a2)
+        text1, text2 = __get_aqi_texts(max_aqi, US_AQI, a1, a2)
         return max_aqi, text1, text2
     elif t == AQI_MIN:
         return 0, a1[0], a2[0]
     aqi = round((i[1] - i[0]) / (bp[1] - bp[0]) * (cp - bp[0]) + i[0], 0)
-    text1, text2 = __get_aqi_texts(aqi, a1, a2)
+    text1, text2 = __get_aqi_texts(aqi, US_AQI, a1, a2)
     return aqi, text1, text2
 
 
@@ -134,8 +135,8 @@ def get_aqi_o3(o3_8h: float, o3_1h: float = None) -> (float, str, str):
     """
     Calculate O3 US AQI
 
-    :param o3_8h: O3 average (8h)
-    :param o3_1h: O3 average (1h)
+    :param o3_8h: O3 average (8h), ppm
+    :param o3_1h: O3 average (1h), ppm
     :return: O3 US AQI, Effect message, Caution message
     """
     cp_8h = __round_down(o3_8h, 3)
@@ -151,7 +152,7 @@ def get_aqi_co_8h(co_8h: float) -> (float, str, str):
     """
     Calculate CO (8h) US AQI
 
-    :param co_8h: CO average (8h)
+    :param co_8h: CO average (8h), ppm
     :return: CO US AQI, Effect message, Caution message
     """
     cp = __round_down(co_8h, 1)
@@ -162,7 +163,7 @@ def get_aqi_pm25_24h(pm25_24h: float) -> (float, str, str):
     """
     Calculate PM2.5 (24h) US AQI
 
-    :param pm25_24h: PM2.5 average (24h)
+    :param pm25_24h: PM2.5 average (24h), μg/m3
     :return: PM2.5 US AQI, Effect message, Caution message
     """
     cp = __round_down(pm25_24h, 1)
@@ -173,7 +174,7 @@ def get_aqi_pm10_24h(pm10_24h: float) -> (float, str, str):
     """
     Calculate PM10 (24h) US AQI
 
-    :param pm10_24h: PM10 average (24h)
+    :param pm10_24h: PM10 average (24h), μg/m3
     :return: PM10 US AQI, Effect message, Caution message
     """
     cp = round(pm10_24h)
@@ -184,8 +185,8 @@ def get_aqi_so2_1h_24h(so2_1h: float, so2_24h: float = None) -> (float, str, str
     """
     Calculate SO2 (1h or 24h) US AQI
 
-    :param so2_1h: SO2 average (1h)
-    :param so2_24h: SO2 average (24h)
+    :param so2_1h: SO2 average (1h), ppb
+    :param so2_24h: SO2 average (24h), ppb
     :return: SO2 US AQI, Effect message, Caution message
     """
     cp_1h = round(so2_1h)
@@ -201,7 +202,7 @@ def get_aqi_no2_1h(no2_1h: float) -> (float, str, str):
     """
     Calculate NO2 (1h) US AQI
 
-    :param no2_1h: NO2 average (1h)
+    :param no2_1h: NO2 average (1h), ppb
     :return: NO2 US AQI, Effect message, Caution message
     """
     cp = round(no2_1h)
@@ -213,14 +214,14 @@ def get_aqi(co_8h: float = None, o3_1h: float = None, o3_8h: float = None, no2_1
     """
     Calculate US AQI (Maximum from individual indexes)
 
-    :param co_8h: CO average (8h)
-    :param o3_1h: O3 average (1h)
-    :param o3_8h: O3 average (8h)
-    :param no2_1h: NO2 average (1h)
-    :param pm25_24h: PM2.5 average (24h)
-    :param pm10_24h: PM10 average (24h)
-    :param so2_1h: SO2 average (1h)
-    :param so2_24h: SO2 average (24h)
+    :param co_8h: CO average (8h), ppm
+    :param o3_1h: O3 average (1h), ppm
+    :param o3_8h: O3 average (8h), ppm
+    :param no2_1h: NO2 average (1h), ppb
+    :param pm25_24h: PM2.5 average (24h), μg/m3
+    :param pm10_24h: PM10 average (24h), μg/m3
+    :param so2_1h: SO2 average (1h), ppb
+    :param so2_24h: SO2 average (24h), ppb
     :return: US AQI, dict with tuples (Individual aqi, Effect message, Caution message) - keys are: co, o3, no2, pm25, pm10, so2
              -1 means AQI is not available
     """
