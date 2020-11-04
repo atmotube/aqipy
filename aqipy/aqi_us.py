@@ -90,9 +90,9 @@ US_NO2_CAUTIONS = (
     "People with asthma, children and older adults should remain indoors; everyone else should avoid all outdoor exertion."
 )
 
-VAL_MINIMUM = 0
-VAL_AQI = 1
-VAL_MAXIMUM = 2
+AQI_NOT_AVAILABLE = -1
+AQI_MIN = -1
+AQI_MAX = len(US_AQI)
 
 
 def __round_down(n, decimals=0) -> float:
@@ -100,13 +100,15 @@ def __round_down(n, decimals=0) -> float:
     return math.floor(n * multiplier) / multiplier
 
 
-def __get_index_data(val: float, array: [[]]) -> (int, [], []):
+def __get_index_data(val: float, array: [[]], max_aqi: int) -> (int, [], []):
     for i in range(len(array)):
         if array[i][0] <= val <= array[i][1]:
-            return VAL_AQI, US_AQI[i], array[i]
+            if max_aqi <= US_AQI[i][1]:
+                return AQI_MAX, US_AQI[i], array[i]
+            return i, US_AQI[i], array[i]
         elif val < array[i][0]:
-            return VAL_MINIMUM
-    return VAL_MAXIMUM
+            return AQI_MIN, US_AQI[0], array[0]
+    return AQI_MAX, US_AQI[-1], array[-1]
 
 
 def __get_aqi_texts(aqi: int, a1: [], a2: []) -> (str, str):
@@ -116,13 +118,16 @@ def __get_aqi_texts(aqi: int, a1: [], a2: []) -> (str, str):
     return "", ""
 
 
-def __get_aqi(cp: float, av: [], a1: [], a2: []) -> (float, str, str):
-    t, i, bp = __get_index_data(cp, av)
-    if t == VAL_AQI:
-        aqi = round((i[1] - i[0]) / (bp[1] - bp[0]) * (cp - bp[0]) + i[0], 0)
-        text1, text2 = __get_aqi_texts(aqi, a1, a2)
-        return aqi, text1, text2
-    return -1
+def __get_aqi(cp: float, av: [], a1: [], a2: [], max_aqi: int = US_AQI[AQI_MAX - 1][1]) -> (float, str, str):
+    t, i, bp = __get_index_data(cp, av, max_aqi)
+    if t == AQI_MAX:
+        text1, text2 = __get_aqi_texts(max_aqi, a1, a2)
+        return max_aqi, text1, text2
+    elif t == AQI_MIN:
+        return 0, a1[0], a2[0]
+    aqi = round((i[1] - i[0]) / (bp[1] - bp[0]) * (cp - bp[0]) + i[0], 0)
+    text1, text2 = __get_aqi_texts(aqi, a1, a2)
+    return aqi, text1, text2
 
 
 def get_aqi_o3(o3_8h: float, o3_1h: float = None) -> (float, str, str):
@@ -135,7 +140,7 @@ def get_aqi_o3(o3_8h: float, o3_1h: float = None) -> (float, str, str):
     """
     cp_8h = __round_down(o3_8h, 3)
     if cp_8h <= US_OZONE_8H[4][1] or o3_1h is None:  # 8-hour O3 values do not define higher AQI values (≥ 301)
-        return __get_aqi(cp_8h, US_OZONE_8H, US_OZONE_EFFECTS, US_OZONE_CAUTIONS)
+        return __get_aqi(cp_8h, US_OZONE_8H, US_OZONE_EFFECTS, US_OZONE_CAUTIONS, 300)
     else:
         cp_1h = __round_down(o3_1h, 3)
         # AQI values of 301 or higher are calculated with 1-hour O3 concentrations.
@@ -185,7 +190,7 @@ def get_aqi_so2_1h_24h(so2_1h: float, so2_24h: float = None) -> (float, str, str
     """
     cp_1h = round(so2_1h)
     if cp_1h <= US_SO2_1H[3][1] or so2_24h is None:  # 1-hour SO2 values do not define higher AQI values (≥ 200)
-        return __get_aqi(cp_1h, US_SO2_1H, US_SO2_EFFECTS, US_SO2_CAUTIONS)
+        return __get_aqi(cp_1h, US_SO2_1H, US_SO2_EFFECTS, US_SO2_CAUTIONS, 200)
     else:
         # AQI values of 200 or greater are calculated with 24-hour SO2 concentrations.
         cp_24h = round(so2_24h)
@@ -217,6 +222,7 @@ def get_aqi(co_8h: float = None, o3_1h: float = None, o3_8h: float = None, no2_1
     :param so2_1h: SO2 average (1h)
     :param so2_24h: SO2 average (24h)
     :return: US AQI, dict with tuples (Individual aqi, Effect message, Caution message) - keys are: co, o3, no2, pm25, pm10, so2
+             -1 means AQI is not available
     """
     aqi_data = {}
     if co_8h:
@@ -232,5 +238,5 @@ def get_aqi(co_8h: float = None, o3_1h: float = None, o3_8h: float = None, no2_1
     if so2_1h:
         aqi_data['so2'] = get_aqi_so2_1h_24h(so2_1h, so2_24h)
     if len(aqi_data) == 0:
-        return -1, aqi_data
+        return AQI_NOT_AVAILABLE, aqi_data
     return max(list(map(lambda x: x[0], aqi_data.values()))), aqi_data

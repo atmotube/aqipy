@@ -12,6 +12,35 @@ def test_get_aqi_ozone_8h():
     assert aqi_data['o3'][1] == aqi_us.US_OZONE_EFFECTS[2]
     assert aqi_data['o3'][2] == aqi_us.US_OZONE_CAUTIONS[2]
     assert aqi_us.get_aqi()[0] == -1
+    aqi, aqi_data = aqi_us.get_aqi(o3_8h=0.07853333, co_8h=5)
+    assert aqi == 126
+    assert 'o3' in aqi_data
+    assert 'co' in aqi_data
+    assert aqi_data['co'][0] == 56
+
+
+def test_labels():
+    assert len(aqi_us.US_AQI) == len(aqi_us.US_OZONE_EFFECTS)
+    assert len(aqi_us.US_AQI) == len(aqi_us.US_OZONE_CAUTIONS)
+    assert len(aqi_us.US_AQI) == len(aqi_us.US_PM_EFFECTS)
+    assert len(aqi_us.US_AQI) == len(aqi_us.US_PM_CAUTIONS)
+    assert len(aqi_us.US_AQI) == len(aqi_us.US_CO_EFFECTS)
+    assert len(aqi_us.US_AQI) == len(aqi_us.US_CO_CAUTIONS)
+    assert len(aqi_us.US_AQI) == len(aqi_us.US_SO2_EFFECTS)
+    assert len(aqi_us.US_AQI) == len(aqi_us.US_SO2_CAUTIONS)
+    assert len(aqi_us.US_AQI) == len(aqi_us.US_NO2_EFFECTS)
+    assert len(aqi_us.US_AQI) == len(aqi_us.US_NO2_CAUTIONS)
+
+
+def test_max():
+    aqi, text1, text2 = aqi_us.get_aqi_o3(100)
+    assert aqi == 300
+    aqi, aqi_data = aqi_us.get_aqi(o3_8h=100)
+    assert aqi == 300
+    aqi, text1, text2 = aqi_us.get_aqi_o3(100, 100)
+    assert aqi == 500
+    aqi, text1, text2 = aqi_us.get_aqi_o3(0, o3_1h=0.1)
+    assert aqi == 0
 
 
 def test_arrays_val():
