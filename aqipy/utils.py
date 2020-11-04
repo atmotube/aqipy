@@ -51,3 +51,8 @@ def __get_aqi_general_formula_texts(cp: float, av: [], a1: [], a2: [], aqi_a: []
     aqi = round((i[1] - i[0]) / (bp[1] - bp[0]) * (cp - bp[0]) + i[0])
     text1, text2 = __get_aqi_texts(aqi, aqi_a, a1, a2)
     return aqi, text1, text2
+
+
+def __added_risk(beta, c):
+    ar = math.expm1(beta * float(c)) * 100.0
+    return ar
