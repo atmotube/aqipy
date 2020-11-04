@@ -2,21 +2,21 @@ from aqipy import aqi_us
 
 
 def test_get_aqi_ozone_8h():
-    aqi, text1, text2 = aqi_us.get_aqi_o3(0.07853333)
+    aqi, text1, text2 = aqi_us.get_aqi_o3_8h(0.07853333)
     assert aqi == 126
     assert text1 == aqi_us.US_OZONE_EFFECTS[2]
     assert text2 == aqi_us.US_OZONE_CAUTIONS[2]
     aqi, aqi_data = aqi_us.get_aqi(o3_8h=0.07853333)
     assert aqi == 126
-    assert aqi_data['o3'][0] == 126
-    assert aqi_data['o3'][1] == aqi_us.US_OZONE_EFFECTS[2]
-    assert aqi_data['o3'][2] == aqi_us.US_OZONE_CAUTIONS[2]
+    assert aqi_data['o3_8h'][0] == 126
+    assert aqi_data['o3_8h'][1] == aqi_us.US_OZONE_EFFECTS[2]
+    assert aqi_data['o3_8h'][2] == aqi_us.US_OZONE_CAUTIONS[2]
     assert aqi_us.get_aqi()[0] == -1
     aqi, aqi_data = aqi_us.get_aqi(o3_8h=0.07853333, co_8h=5)
     assert aqi == 126
-    assert 'o3' in aqi_data
-    assert 'co' in aqi_data
-    assert aqi_data['co'][0] == 56
+    assert 'o3_8h' in aqi_data
+    assert 'co_8h' in aqi_data
+    assert aqi_data['co_8h'][0] == 56
 
 
 def test_labels():
@@ -33,13 +33,13 @@ def test_labels():
 
 
 def test_max():
-    aqi, text1, text2 = aqi_us.get_aqi_o3(100)
+    aqi, text1, text2 = aqi_us.get_aqi_o3_8h(100)
     assert aqi == 300
     aqi, aqi_data = aqi_us.get_aqi(o3_8h=100)
     assert aqi == 300
-    aqi, text1, text2 = aqi_us.get_aqi_o3(100, 100)
+    aqi, text1, text2 = aqi_us.get_aqi_o3_1h(100)
     assert aqi == 500
-    aqi, text1, text2 = aqi_us.get_aqi_o3(0, o3_1h=0.1)
+    aqi, text1, text2 = aqi_us.get_aqi_o3_1h(0.1)
     assert aqi == 0
 
 

@@ -28,21 +28,25 @@ CA_AQHI_RISK = (
 
 def get_aqhi(o3_3h: float, no2_3h: float, pm25_3h: float, pm10_3h: float = None) -> (float, str, str):
     """
-    Calculate US AQHI
+    Calculates US AQHI
 
-    :param o3_3h: O3 average (3h), ppb
-    :param no2_3h: NO2 average (3h), ppb
+    :param o3_3h: O3 average (3h), ppm
+    :param no2_3h: NO2 average (3h), ppm
     :param pm25_3h: PM2.5 average (3h), μg/m3
     :param pm10_3h: PM10 average (3h), μg/m3
     :return: CA AQHI, Effect message, Caution message
     """
     aqi_data = {}
-    o3 = math.pow(math.e, 0.000537 * o3_3h) - 1
-    no2 = math.pow(math.e, 0.000871 * no2_3h) - 1
+    o3_3h_ppb = o3_3h * 1000
+    no2_3h_ppb = no2_3h * 1000
+    o3 = math.pow(math.e, 0.000537 * o3_3h_ppb) - 1
+    no2 = math.pow(math.e, 0.000871 * no2_3h_ppb) - 1
     pm25 = math.pow(math.e, 0.000487 * pm25_3h) - 1
     aqhi_pm25 = 1000 / 10.4 * (o3 + no2 + pm25)
     if aqhi_pm25 < 0.5:
         aqhi_pm25 = 1
+    elif aqhi_pm25 > CA_AQHI[-1][1]:
+        aqhi_pm25 = CA_AQHI[-1][1]
     else:
         aqhi_pm25 = round(aqhi_pm25)
     aqi_data['pm25'] = aqhi_pm25
@@ -51,6 +55,8 @@ def get_aqhi(o3_3h: float, no2_3h: float, pm25_3h: float, pm10_3h: float = None)
         aqhi_pm10 = 1000 / 11.7 * (o3 + no2 + pm10)
         if aqhi_pm10 < 0.5:
             aqhi_pm10 = 1
+        elif aqhi_pm10 > CA_AQHI[-1][1]:
+            aqhi_pm10 = CA_AQHI[-1][1]
         else:
             aqhi_pm10 = round(aqhi_pm10)
         aqi_data['pm10'] = aqhi_pm10

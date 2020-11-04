@@ -5,9 +5,7 @@
     Source: https://www.airnow.gov/sites/default/files/2018-05/aqi-technical-assistance-document-may2016.pdf
 """
 
-
-import math
-from aqipy.utils import AQI_NOT_AVAILABLE, __get_aqi_texts
+from aqipy.utils import AQI_NOT_AVAILABLE, __round_down, __get_aqi_general_formula_texts
 
 US_AQI = ((0, 50), (51, 100), (101, 150), (151, 200), (201, 300), (301, 500))
 US_OZONE_8H = ((0, 0.054), (0.055, 0.070), (0.071, 0.085), (0.086, 0.105), (0.106, 0.200))
@@ -99,145 +97,131 @@ US_NO2_CAUTIONS = (
     "People with asthma, children and older adults should remain indoors; everyone else should avoid all outdoor exertion."
 )
 
-AQI_MIN = -1
-AQI_MAX = len(US_AQI)
 
-
-def __round_down(n, decimals=0) -> float:
-    multiplier = 10 ** decimals
-    return math.floor(n * multiplier) / multiplier
-
-
-def __get_index_data(val: float, array: [[]], max_aqi: int) -> (int, [], []):
-    for i in range(len(array)):
-        if array[i][0] <= val <= array[i][1]:
-            if max_aqi <= US_AQI[i][1]:
-                return AQI_MAX, US_AQI[i], array[i]
-            return i, US_AQI[i], array[i]
-        elif val < array[i][0]:
-            return AQI_MIN, US_AQI[0], array[0]
-    return AQI_MAX, US_AQI[-1], array[-1]
-
-
-def __get_aqi(cp: float, av: [], a1: [], a2: [], max_aqi: int = US_AQI[AQI_MAX - 1][1]) -> (float, str, str):
-    t, i, bp = __get_index_data(cp, av, max_aqi)
-    if t == AQI_MAX:
-        text1, text2 = __get_aqi_texts(max_aqi, US_AQI, a1, a2)
-        return max_aqi, text1, text2
-    elif t == AQI_MIN:
-        return 0, a1[0], a2[0]
-    aqi = round((i[1] - i[0]) / (bp[1] - bp[0]) * (cp - bp[0]) + i[0], 0)
-    text1, text2 = __get_aqi_texts(aqi, US_AQI, a1, a2)
-    return aqi, text1, text2
-
-
-def get_aqi_o3(o3_8h: float, o3_1h: float = None) -> (float, str, str):
+def get_aqi_o3_1h(o3_1h: float) -> (float, str, str):
     """
-    Calculate O3 US AQI
+    Calculates O3 US AQI
 
-    :param o3_8h: O3 average (8h), ppm
     :param o3_1h: O3 average (1h), ppm
     :return: O3 US AQI, Effect message, Caution message
     """
-    cp_8h = __round_down(o3_8h, 3)
-    if cp_8h <= US_OZONE_8H[4][1] or o3_1h is None:  # 8-hour O3 values do not define higher AQI values (≥ 301)
-        return __get_aqi(cp_8h, US_OZONE_8H, US_OZONE_EFFECTS, US_OZONE_CAUTIONS, 300)
-    else:
-        cp_1h = __round_down(o3_1h, 3)
-        # AQI values of 301 or higher are calculated with 1-hour O3 concentrations.
-        return __get_aqi(cp_1h, US_OZONE_1H, US_OZONE_EFFECTS, US_OZONE_CAUTIONS)
+    cp = __round_down(o3_1h, 3)
+    return __get_aqi_general_formula_texts(cp, US_OZONE_1H, US_OZONE_EFFECTS, US_OZONE_CAUTIONS, US_AQI)
+
+
+def get_aqi_o3_8h(o3_8h: float) -> (float, str, str):
+    """
+    Calculates O3 US AQI
+
+    :param o3_8h: O3 average (8h), ppm
+    :return: O3 US AQI, Effect message, Caution message
+    """
+    cp = __round_down(o3_8h, 3)
+    # 8-hour O3 values do not define higher AQI values (≥ 301)
+    return __get_aqi_general_formula_texts(cp, US_OZONE_8H, US_OZONE_EFFECTS, US_OZONE_CAUTIONS, US_AQI, 300)
 
 
 def get_aqi_co_8h(co_8h: float) -> (float, str, str):
     """
-    Calculate CO (8h) US AQI
+    Calculates CO (8h) US AQI
 
     :param co_8h: CO average (8h), ppm
     :return: CO US AQI, Effect message, Caution message
     """
     cp = __round_down(co_8h, 1)
-    return __get_aqi(cp, US_CO_8H, US_CO_EFFECTS, US_CO_CAUTIONS)
+    return __get_aqi_general_formula_texts(cp, US_CO_8H, US_CO_EFFECTS, US_CO_CAUTIONS, US_AQI)
 
 
 def get_aqi_pm25_24h(pm25_24h: float) -> (float, str, str):
     """
-    Calculate PM2.5 (24h) US AQI
+    Calculates PM2.5 (24h) US AQI
 
     :param pm25_24h: PM2.5 average (24h), μg/m3
     :return: PM2.5 US AQI, Effect message, Caution message
     """
     cp = __round_down(pm25_24h, 1)
-    return __get_aqi(cp, US_PM25_24H, US_PM_EFFECTS, US_PM_CAUTIONS)
+    return __get_aqi_general_formula_texts(cp, US_PM25_24H, US_PM_EFFECTS, US_PM_CAUTIONS, US_AQI)
 
 
 def get_aqi_pm10_24h(pm10_24h: float) -> (float, str, str):
     """
-    Calculate PM10 (24h) US AQI
+    Calculates PM10 (24h) US AQI
 
     :param pm10_24h: PM10 average (24h), μg/m3
     :return: PM10 US AQI, Effect message, Caution message
     """
     cp = round(pm10_24h)
-    return __get_aqi(cp, US_PM10_24H, US_PM_EFFECTS, US_PM_CAUTIONS)
+    return __get_aqi_general_formula_texts(cp, US_PM10_24H, US_PM_EFFECTS, US_PM_CAUTIONS, US_AQI)
 
 
-def get_aqi_so2_1h_24h(so2_1h: float, so2_24h: float = None) -> (float, str, str):
+def get_aqi_so2_1h(so2_1h: float) -> (float, str, str):
     """
-    Calculate SO2 (1h or 24h) US AQI
+    Calculates SO2 (1h) US AQI
 
-    :param so2_1h: SO2 average (1h), ppb
-    :param so2_24h: SO2 average (24h), ppb
+    :param so2_1h: SO2 average (1h), ppm
     :return: SO2 US AQI, Effect message, Caution message
     """
-    cp_1h = round(so2_1h)
-    if cp_1h <= US_SO2_1H[3][1] or so2_24h is None:  # 1-hour SO2 values do not define higher AQI values (≥ 200)
-        return __get_aqi(cp_1h, US_SO2_1H, US_SO2_EFFECTS, US_SO2_CAUTIONS, 200)
-    else:
-        # AQI values of 200 or greater are calculated with 24-hour SO2 concentrations.
-        cp_24h = round(so2_24h)
-        return __get_aqi(cp_24h, US_SO2_24H, US_SO2_EFFECTS, US_SO2_CAUTIONS)
+    cp = round(so2_1h * 1000)
+    # 1-hour SO2 values do not define higher AQI values (≥ 200)
+    return __get_aqi_general_formula_texts(cp, US_SO2_1H, US_SO2_EFFECTS, US_SO2_CAUTIONS, US_AQI, 200)
+
+
+def get_aqi_so2_24h(so2_24h: float) -> (float, str, str):
+    """
+    Calculates SO2 (24h) US AQI
+
+    :param so2_24h: SO2 average (24h), ppm
+    :return: SO2 US AQI, Effect message, Caution message
+    """
+    cp = round(so2_24h * 1000)
+    return __get_aqi_general_formula_texts(cp, US_SO2_24H, US_SO2_EFFECTS, US_SO2_CAUTIONS, US_AQI)
 
 
 def get_aqi_no2_1h(no2_1h: float) -> (float, str, str):
     """
-    Calculate NO2 (1h) US AQI
+    Calculates NO2 (1h) US AQI
 
-    :param no2_1h: NO2 average (1h), ppb
+    :param no2_1h: NO2 average (1h), ppm
     :return: NO2 US AQI, Effect message, Caution message
     """
-    cp = round(no2_1h)
-    return __get_aqi(cp, US_NO2_1H, US_NO2_EFFECTS, US_NO2_CAUTIONS)
+    cp = round(no2_1h * 1000)
+    return __get_aqi_general_formula_texts(cp, US_NO2_1H, US_NO2_EFFECTS, US_NO2_CAUTIONS, US_AQI)
 
 
 def get_aqi(co_8h: float = None, o3_1h: float = None, o3_8h: float = None, no2_1h: float = None, pm25_24h: float = None,
             pm10_24h: float = None, so2_1h: float = None, so2_24h: float = None) -> (int, {}):
     """
-    Calculate US AQI (Maximum from individual indexes)
+    Calculates US AQI (Maximum from individual indexes)
 
     :param co_8h: CO average (8h), ppm
     :param o3_1h: O3 average (1h), ppm
     :param o3_8h: O3 average (8h), ppm
-    :param no2_1h: NO2 average (1h), ppb
+    :param no2_1h: NO2 average (1h), ppm
     :param pm25_24h: PM2.5 average (24h), μg/m3
     :param pm10_24h: PM10 average (24h), μg/m3
-    :param so2_1h: SO2 average (1h), ppb
-    :param so2_24h: SO2 average (24h), ppb
-    :return: US AQI, dict with tuples (Individual aqi, Effect message, Caution message) - keys are: co, o3, no2, pm25, pm10, so2
+    :param so2_1h: SO2 average (1h), ppm
+    :param so2_24h: SO2 average (24h), ppm
+    :return: US AQI, dict with tuples (Individual aqi, Effect message, Caution message)
+            keys are: co_8h, o3_1h, o3_8h, no2_1h, pm25_24h, pm10_24h, so2_1h, so2_24h
              -1 means AQI is not available
     """
     aqi_data = {}
     if co_8h:
-        aqi_data['co'] = get_aqi_co_8h(co_8h)
+        aqi_data['co_8h'] = get_aqi_co_8h(co_8h)
+    if o3_1h:
+        aqi_data['o3_1h'] = get_aqi_o3_1h(o3_1h)
     if o3_8h:
-        aqi_data['o3'] = get_aqi_o3(o3_8h, o3_1h)
+        aqi_data['o3_8h'] = get_aqi_o3_8h(o3_8h)
     if no2_1h:
-        aqi_data['no2'] = get_aqi_no2_1h(no2_1h)
+        aqi_data['no2_1h'] = get_aqi_no2_1h(no2_1h)
     if pm25_24h:
-        aqi_data['pm25'] = get_aqi_pm25_24h(pm25_24h)
+        aqi_data['pm25_24h'] = get_aqi_pm25_24h(pm25_24h)
     if pm10_24h:
-        aqi_data['pm10'] = get_aqi_pm10_24h(pm10_24h)
+        aqi_data['pm10_24h'] = get_aqi_pm10_24h(pm10_24h)
     if so2_1h:
-        aqi_data['so2'] = get_aqi_so2_1h_24h(so2_1h, so2_24h)
+        aqi_data['so2_1h'] = get_aqi_so2_1h(so2_1h)
+    if so2_24h:
+        aqi_data['so2_24h'] = get_aqi_so2_24h(so2_24h)
     if len(aqi_data) == 0:
         return AQI_NOT_AVAILABLE, aqi_data
     return max(list(map(lambda x: x[0], aqi_data.values()))), aqi_data
