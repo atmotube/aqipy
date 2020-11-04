@@ -98,7 +98,7 @@ US_NO2_CAUTIONS = (
 )
 
 
-def get_aqi_o3_1h(o3_1h: float) -> (float, str, str):
+def get_aqi_o3_1h(o3_1h: float) -> (int, str, str):
     """
     Calculates O3 US AQI
 
@@ -109,7 +109,7 @@ def get_aqi_o3_1h(o3_1h: float) -> (float, str, str):
     return __get_aqi_general_formula_texts(cp, US_OZONE_1H, US_OZONE_EFFECTS, US_OZONE_CAUTIONS, US_AQI)
 
 
-def get_aqi_o3_8h(o3_8h: float) -> (float, str, str):
+def get_aqi_o3_8h(o3_8h: float) -> (int, str, str):
     """
     Calculates O3 US AQI
 
@@ -121,7 +121,7 @@ def get_aqi_o3_8h(o3_8h: float) -> (float, str, str):
     return __get_aqi_general_formula_texts(cp, US_OZONE_8H, US_OZONE_EFFECTS, US_OZONE_CAUTIONS, US_AQI, 300)
 
 
-def get_aqi_co_8h(co_8h: float) -> (float, str, str):
+def get_aqi_co_8h(co_8h: float) -> (int, str, str):
     """
     Calculates CO (8h) US AQI
 
@@ -132,7 +132,7 @@ def get_aqi_co_8h(co_8h: float) -> (float, str, str):
     return __get_aqi_general_formula_texts(cp, US_CO_8H, US_CO_EFFECTS, US_CO_CAUTIONS, US_AQI)
 
 
-def get_aqi_pm25_24h(pm25_24h: float) -> (float, str, str):
+def get_aqi_pm25_24h(pm25_24h: float) -> (int, str, str):
     """
     Calculates PM2.5 (24h) US AQI
 
@@ -143,7 +143,7 @@ def get_aqi_pm25_24h(pm25_24h: float) -> (float, str, str):
     return __get_aqi_general_formula_texts(cp, US_PM25_24H, US_PM_EFFECTS, US_PM_CAUTIONS, US_AQI)
 
 
-def get_aqi_pm10_24h(pm10_24h: float) -> (float, str, str):
+def get_aqi_pm10_24h(pm10_24h: float) -> (int, str, str):
     """
     Calculates PM10 (24h) US AQI
 
@@ -154,7 +154,7 @@ def get_aqi_pm10_24h(pm10_24h: float) -> (float, str, str):
     return __get_aqi_general_formula_texts(cp, US_PM10_24H, US_PM_EFFECTS, US_PM_CAUTIONS, US_AQI)
 
 
-def get_aqi_so2_1h(so2_1h: float) -> (float, str, str):
+def get_aqi_so2_1h(so2_1h: float) -> (int, str, str):
     """
     Calculates SO2 (1h) US AQI
 
@@ -166,7 +166,7 @@ def get_aqi_so2_1h(so2_1h: float) -> (float, str, str):
     return __get_aqi_general_formula_texts(cp, US_SO2_1H, US_SO2_EFFECTS, US_SO2_CAUTIONS, US_AQI, 200)
 
 
-def get_aqi_so2_24h(so2_24h: float) -> (float, str, str):
+def get_aqi_so2_24h(so2_24h: float) -> (int, str, str):
     """
     Calculates SO2 (24h) US AQI
 
@@ -177,7 +177,7 @@ def get_aqi_so2_24h(so2_24h: float) -> (float, str, str):
     return __get_aqi_general_formula_texts(cp, US_SO2_24H, US_SO2_EFFECTS, US_SO2_CAUTIONS, US_AQI)
 
 
-def get_aqi_no2_1h(no2_1h: float) -> (float, str, str):
+def get_aqi_no2_1h(no2_1h: float) -> (int, str, str):
     """
     Calculates NO2 (1h) US AQI
 
