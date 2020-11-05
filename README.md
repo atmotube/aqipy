@@ -1,4 +1,7 @@
 # AQI calculation library (python)
+[![PyPI version](https://badge.fury.io/py/aqipy-atmotech.svg)](https://badge.fury.io/py/aqipy-atmotech)
+[![pypi supported versions](https://img.shields.io/pypi/pyversions/aqipy-atmotech.svg)](https://pypi.python.org/pypi/aqipy-atmotech)
+
 The library calculates the following indexes:
 - AQI (US)
 - AQHI (Canada)
