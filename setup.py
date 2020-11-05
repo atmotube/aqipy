@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 setup(
     name='aqipy-atmotech',
     packages=find_packages(include=['aqipy']),
-    version='0.1.0',
+    version='0.1.1',
     description='AQI calculation library',
     author='Atmotech Inc.',
     author_email='info@atmotube.com',
