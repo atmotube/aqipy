@@ -7,8 +7,7 @@
             https://www.gov.hk/en/residents/environment/air/aqhi.htm
 """
 
-import math
-from aqipy.utils import AQI_NOT_AVAILABLE, __get_aqi_texts, __added_risk
+from aqipy.utils import __get_aqi_texts, __added_risk
 
 HK_AR = (
     (0.00, 1.87), (1.88, 3.76), (3.76, 5.63), (5.64, 7.51), (7.52, 9.40), (9.41, 11.28), (11.29, 12.90), (12.91, 15.06),
@@ -50,14 +49,14 @@ O3_PPB_UGM3 = 2
 
 def get_aqhi(o3_3h: float, no2_3h: float, so2_3h: float, pm25_3h: float, pm10_3h: float) -> (float, str, str):
     """
-    Calculates US AQHI
+    Calculates Hong Kong AQHI
 
     :param o3_3h: O3 average (3h), ppm
     :param no2_3h: NO2 average (3h), ppm
     :param so2_3h: SO2 average (3h), ppm
     :param pm25_3h: PM2.5 average (3h), μg/m3
     :param pm10_3h: PM10 average (3h), μg/m3
-    :return: CA AQHI, Effect message, Caution message
+    :return: Hong Kong AQHI, Effect message, Caution message
     """
     betas = [0.0004462559, 0.0001393235, 0.0005116328, 0.0002821751, 0.0002180567]
     c = [no2_3h * 1000 * NO2_PPB_UGM3, so2_3h * 1000 * SO2_PPB_UGM3, o3_3h * 1000 * O3_PPB_UGM3, pm10_3h, pm25_3h]

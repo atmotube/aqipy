@@ -70,12 +70,12 @@ Cautions CO:
 | PM<sub>2.5</sub>   |μg/m<sup>3</sup> |
 | PM<sub>10</sub>    |μg/m<sup>3</sup> |
 
-## Summary
+## Summary (averages)
 | Index               |PM<sub>2.5</sub> | PM<sub>10</sub> |O<sub>3</sub>     |NO<sub>2</sub>   |CO               |SO<sub>2</sub>   |NH<sub>3</sub>   |Pb               |
 |---------------------|-----------------|-----------------|------------------|-----------------|-----------------|-----------------|-----------------|-----------------|
 | AQI (US)            |24h              |24h              |8h/1h	         |1h	           |8h               |1h               |-                |-                |
 | AQHI (Canada)       |3h	            |3h	              |3h                |3h               |-	             |-	               |-	             |-                |
-| CAQI (Europe)       |1h/24h           |1h/24h           |1h	             |1h	           |8h	             |1h               |-	             |-                |
+| CAQI (Europe)       |1h/24h           |1h/24h           |max in 1h         |max in 1h	       |8h	             |max in 1h        |-	             |-                |
 | DAQI (UK)           |24h	            |24h	          |8h                |1h	           |-	             |15m              |-	             |-                |
 | AQI (Australia)     |24h	            |24h              |1h/4h             |1h	           |8h	             |1h	           |-	             |-                |
 | CAI (South Korea)   |24h	            |24h              |1h	             |1h               |1h	             |1h	           |-                |-                |

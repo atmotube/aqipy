@@ -4,11 +4,11 @@ from aqipy import caqi_eu
 def test_get_caqi_ozone_8h():
     caqi = caqi_eu.get_caqi_o3_1h(0.07853333)
     assert caqi == 65
-    caqi, aqi_data = caqi_eu.get_caqi(o3_1h=0.07853333)
+    caqi, aqi_data = caqi_eu.get_caqi(o3_max_1h=0.07853333)
     assert caqi == 65
     assert aqi_data['o3_1h'] == 65
     assert caqi_eu.get_caqi()[0] == -1
-    aqi, aqi_data = caqi_eu.get_caqi(o3_1h=0.07853333, co_1h=5)
+    aqi, aqi_data = caqi_eu.get_caqi(o3_max_1h=0.07853333, co_1h=5)
     assert aqi == 65
     assert 'o3_1h' in aqi_data
     assert 'co_1h' in aqi_data
@@ -18,7 +18,7 @@ def test_get_caqi_ozone_8h():
 def test_max():
     aqi = caqi_eu.get_caqi_o3_1h(100)
     assert aqi == 100
-    aqi, aqi_data = caqi_eu.get_caqi(o3_1h=100)
+    aqi, aqi_data = caqi_eu.get_caqi(o3_max_1h=100)
     assert aqi == 100
     aqi = caqi_eu.get_caqi_o3_1h(100)
     assert aqi == 100

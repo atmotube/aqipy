@@ -35,7 +35,7 @@ CN_PM10_24H = ((0, 35), (36, 75), (76, 115), (116, 150), (151, 250), (251, 500))
 
 def get_aqi_o3_1h(o3_1h: float) -> (int, str, str):
     """
-    Calculates O3 CN AQI
+    Calculates O3 (1h) CN AQI
 
     :param o3_1h: O3 average (1h), ppm
     :return: O3 CN AQI, Effect message, Caution message
@@ -46,7 +46,7 @@ def get_aqi_o3_1h(o3_1h: float) -> (int, str, str):
 
 def get_aqi_o3_8h(o3_8h: float) -> (int, str, str):
     """
-    Calculates O3 CN AQI
+    Calculates O3 (1h) CN AQI
 
     :param o3_8h: O3 average (8h), ppm
     :return: O3 CN AQI, Effect message, Caution message
@@ -113,7 +113,7 @@ def get_aqi_no2_24h(no2_24h: float) -> (int, str, str):
 def get_aqi(o3_1h: float = None, o3_8h: float = None, co_24h: float = None, pm25_24h: float = None,
             pm10_24h: float = None, so2_24h: float = None, no2_24h: float = None) -> (int, {}):
     """
-    Calculates US AQI (Maximum from individual indexes)
+    Calculates CN AQI (Maximum from individual indexes)
 
     :param o3_1h: O3 average (1h), ppm
     :param o3_8h: O3 average (8h), ppm
@@ -122,8 +122,8 @@ def get_aqi(o3_1h: float = None, o3_8h: float = None, co_24h: float = None, pm25
     :param pm10_24h: PM10 average (24h), μg/m3
     :param so2_24h: SO2 average (24h), ppm
     :param no2_24h: NO2 average (24h), ppm
-    :return: US AQI, dict with tuples (Individual aqi, Effect message, Caution message)
-            keys are: o3_1h, o3_8h, co_24h, pm25_24h, pm10_24h, so2_24h, no2_24h
+    :return: CN AQI, dict with tuples (Individual aqi, Effect message, Caution message)
+             keys are: o3_1h, o3_8h, co_24h, pm25_24h, pm10_24h, so2_24h, no2_24h
              -1 means AQI is not available
     """
     aqi_data = {}

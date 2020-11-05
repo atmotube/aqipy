@@ -38,9 +38,9 @@ SG_AQI_RISK = (
 
 def get_psi_o3_8h(o3_8h: float) -> (int, str, str):
     """
-    Calculates O3 Singapore PSI
+    Calculates O3 (8h) Singapore PSI
 
-    :param o3_8h: O3 average (1h), ppm
+    :param o3_8h: O3 average (8h), ppm
     :return: Singapore PSI, General message, Risk message
     """
     cp = __round_down(o3_8h * 1000)
@@ -49,7 +49,7 @@ def get_psi_o3_8h(o3_8h: float) -> (int, str, str):
 
 def get_psi_no2_1h(no2_1h: float) -> (int, str, str):
     """
-    Calculates NO2 Singapore PSI
+    Calculates NO2 (1h) Singapore PSI
 
     :param no2_1h: NO2 average (1h), ppm
     :return: Singapore PSI, General message, Risk message
@@ -60,7 +60,7 @@ def get_psi_no2_1h(no2_1h: float) -> (int, str, str):
 
 def get_psi_so2_24h(so2_24h: float) -> (int, str, str):
     """
-    Calculates SO2 Singapore PSI
+    Calculates SO2 (24h) Singapore PSI
 
     :param so2_24h: SO2 average (24h), ppm
     :return: Singapore PSI, General message, Risk message
@@ -71,7 +71,7 @@ def get_psi_so2_24h(so2_24h: float) -> (int, str, str):
 
 def get_psi_co_8h(co_8h: float) -> (int, str, str):
     """
-    Calculates CO Singapore PSI
+    Calculates CO (8h) Singapore PSI
 
     :param co_8h: CO average (8h), ppm
     :return: Singapore PSI, General message, Risk message

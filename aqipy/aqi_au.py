@@ -6,7 +6,6 @@
             https://www.environment.nsw.gov.au/topics/air/understanding-air-quality-data/air-quality-index
 """
 
-import math
 from aqipy.utils import AQI_NOT_AVAILABLE, __get_aqi_texts, __round_down
 
 AU_AQI = ((0, 33), (34, 66), (67, 99), (100, 149), (150, 200), (201, 201))
@@ -27,13 +26,13 @@ AU_AQI_RISK = (
     "Sensitive groups should avoid strenuous outdoor activities.",
     "Sensitive groups should avoid all outdoor activities."
 )
-UK_CO_NEPM_STANDARD_8H = 9.0
-UK_NO2_NEPM_STANDARD_1H = 0.12
-UK_O3_NEPM_STANDARD_1H = 0.10
-UK_O3_NEPM_STANDARD_4H = 0.08
-UK_SO2_NEPM_STANDARD_24H = 0.20
-UK_PM25_NEPM_STANDARD_24H = 25
-UK_PM10_NEPM_STANDARD_24H = 50
+AU_CO_NEPM_STANDARD_8H = 9.0
+AU_NO2_NEPM_STANDARD_1H = 0.12
+AU_O3_NEPM_STANDARD_1H = 0.10
+AU_O3_NEPM_STANDARD_4H = 0.08
+AU_SO2_NEPM_STANDARD_24H = 0.20
+AU_PM25_NEPM_STANDARD_24H = 25
+AU_PM10_NEPM_STANDARD_24H = 50
 
 
 def __get_aqi(cp: float, standard:float) -> (int, str, str):
@@ -46,79 +45,79 @@ def __get_aqi(cp: float, standard:float) -> (int, str, str):
 
 def get_aqi_o3_1h(o3_1h: float) -> (int, str, str):
     """
-    Calculates O3 AU AQI
+    Calculates O3 (1h) AU AQI
 
     :param o3_1h: O3 average (1h), ppm
     :return: O3 AU AQI, General message, Risk message
     """
     cp = __round_down(o3_1h, 2)
-    return __get_aqi(cp, UK_O3_NEPM_STANDARD_1H)
+    return __get_aqi(cp, AU_O3_NEPM_STANDARD_1H)
 
 
 def get_aqi_co_8h(co_8h: float) -> (int, str, str):
     """
-    Calculates CO AU AQI
+    Calculates CO (8h) AU AQI
 
     :param co_8h: CO average (8h), ppm
     :return: CO AU AQI, General message, Risk message
     """
     cp = __round_down(co_8h, 1)
-    return __get_aqi(cp, UK_CO_NEPM_STANDARD_8H)
+    return __get_aqi(cp, AU_CO_NEPM_STANDARD_8H)
 
 
 def get_aqi_o3_4h(o3_4h: float) -> (int, str, str):
     """
-    Calculates O3 AU AQI
+    Calculates O3 (4h) AU AQI
 
     :param o3_4h: O3 average (4h), ppm
     :return: O3 AU AQI, General message, Risk message
     """
     cp = __round_down(o3_4h, 2)
-    return __get_aqi(cp, UK_O3_NEPM_STANDARD_4H)
+    return __get_aqi(cp, AU_O3_NEPM_STANDARD_4H)
 
 
 def get_aqi_no2_1h(no2_1h: float) -> (int, str, str):
     """
-    Calculates NO2 AU AQI
+    Calculates NO2 (1h) AU AQI
 
     :param no2_1h: NO2 average (1h), ppm
     :return: NO2 AU AQI, General message, Risk message
     """
     cp = __round_down(no2_1h, 2)
-    return __get_aqi(cp, UK_NO2_NEPM_STANDARD_1H)
+    return __get_aqi(cp, AU_NO2_NEPM_STANDARD_1H)
 
 
 def get_aqi_so2_24h(so2_24h: float) -> (int, str, str):
     """
-    Calculates SO2 AU AQI
+    Calculates SO2 (24h) AU AQI
 
     :param so2_24h: SO2 average (1h), ppm
     :return: SO2 AU AQI, General message, Risk message
     """
     cp = __round_down(so2_24h, 2)
-    return __get_aqi(cp, UK_SO2_NEPM_STANDARD_24H)
+    return __get_aqi(cp, AU_SO2_NEPM_STANDARD_24H)
 
 
 def get_aqi_pm25_24h(pm25_24h: float) -> (int, str, str):
     """
-    Calculates PM2.5 AU AQI
+    Calculates PM2.5 (24h) AU AQI
 
-    :param pm25_24h: PM2.5 average (1h), ppm
+    :param pm25_24h: PM2.5 average (24h), μg/m3
     :return: PM2.5 AU AQI, General message, Risk message
     """
     cp = __round_down(pm25_24h)
-    return __get_aqi(cp, UK_PM25_NEPM_STANDARD_24H)
+    return __get_aqi(cp, AU_PM25_NEPM_STANDARD_24H)
 
 
 def get_aqi_pm10_24h(pm10_24h: float) -> (int, str, str):
     """
-    Calculates PM10 AU AQI
+    Calculates PM10 (24h) AU AQI
 
-    :param pm10_24h: PM10 average (1h), ppm
+    :param pm10_24h: PM10 average (24h), μg/m3
     :return: PM10 AU AQI, General message, Risk message
     """
     cp = __round_down(pm10_24h)
-    return __get_aqi(cp, UK_PM10_NEPM_STANDARD_24H)
+    return __get_aqi(cp, AU_PM10_NEPM_STANDARD_24H)
 
 
 def get_aqi(o3_1h: float = None, o3_4h: float = None, co_8h: float = None,
@@ -134,7 +133,7 @@ def get_aqi(o3_1h: float = None, o3_4h: float = None, co_8h: float = None,
     :param pm25_24h: PM2.5 average (24h), μg/m3
     :param pm10_24h: PM10 average (24h), μg/m3
     :return: AU AQI, dict with tuples (Individual aqi, General message, Risk message)
-            keys are: o3_1h, o3_4h, co_8h, no2_1h, so2_24h, pm25_24h, pm10_24h
+             keys are: o3_1h, o3_4h, co_8h, no2_1h, so2_24h, pm25_24h, pm10_24h
              -1 means AQI is not available
     """
     aqi_data = {}

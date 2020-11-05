@@ -18,36 +18,36 @@ EU_CO_8H = ((0.0, 4.3), (4.4, 6.5), (6.6, 8.6), (8.7, 17.4), (17.5, 17.5))
 EU_SO2_1H = ((0, 18), (19, 37), (38, 133), (134, 190), (191, 191))
 
 
-def get_caqi_no2_1h(no2_1h: float) -> float:
+def get_caqi_no2_1h(no2_max_1h: float) -> float:
     """
-    Calculates NO2 (1h) CAQI Europe
+    Calculates NO2 (max in 1h) CAQI Europe
 
-    :param no2_1h: NO2 (1h), ppm
+    :param no2_max_1h: NO2 (max in 1h), ppm
     :return: NO2 CAQI Europe
     """
-    cp = __round_down(no2_1h * 1000)
+    cp = __round_down(no2_max_1h * 1000)
     return __get_aqi_general_formula(cp, EU_NO2_1H, EU_CAQI)
 
 
-def get_caqi_so2_1h(so2_1h: float) -> float:
+def get_caqi_so2_1h(so2_max_1h: float) -> float:
     """
-    Calculates SO2 (1h) CAQI Europe
+    Calculates SO2 (max in 1h) CAQI Europe
 
-    :param so2_1h: SO2 (1h), ppm
+    :param so2_max_1h: SO2 (1h), ppm
     :return: SO2 CAQI Europe
     """
-    cp = __round_down(so2_1h * 1000)
+    cp = __round_down(so2_max_1h * 1000)
     return __get_aqi_general_formula(cp, EU_SO2_1H, EU_CAQI)
 
 
-def get_caqi_o3_1h(o3_1h: float) -> float:
+def get_caqi_o3_1h(o3_max_1h: float) -> float:
     """
-    Calculates O3 (1h) CAQI Europe
+    Calculates O3 (max in 1h) CAQI Europe
 
-    :param o3_1h: O3 (1h), ppm
+    :param o3_max_1h: O3 (1h), ppm
     :return: O3 CAQI Europe
     """
-    cp = __round_down(o3_1h * 1000)
+    cp = __round_down(o3_max_1h * 1000)
     return __get_aqi_general_formula(cp, EU_O3_1H, EU_CAQI)
 
 
@@ -106,31 +106,30 @@ def get_caqi_pm10_24h(pm10_24h: float) -> float:
     return __get_aqi_general_formula(cp, EU_PM10_24H, EU_CAQI)
 
 
-def get_caqi(co_1h: float = None, o3_1h: float = None, no2_1h: float = None, pm25_24h: float = None,
-             pm25_1h: float = None, pm10_1h: float = None, pm10_24h: float = None, so2_1h: float = None) -> (int, {}):
+def get_caqi(co_1h: float = None, o3_max_1h: float = None, no2_max_1h: float = None, pm25_24h: float = None,
+             pm25_1h: float = None, pm10_1h: float = None, pm10_24h: float = None, so2_max_1h: float = None) -> (int, {}):
     """
     Calculates CAQI Europe (Maximum from individual indexes)
 
     :param co_1h: CO average (1h), ppm
-    :param o3_1h: O3 average (1h), ppm
-    :param o3_8h: O3 average (8h), ppm
-    :param no2_1h: NO2 average (1h), ppm
+    :param o3_max_1h: O3 maximum (max in 1h), ppm
+    :param no2_max_1h: NO2 maximum (max in 1h), ppm
     :param pm25_1h: PM2.5 average (1h), μg/m3
     :param pm25_24h: PM2.5 average (24h), μg/m3
     :param pm10_1h: PM10 average (1h), μg/m3
     :param pm10_24h: PM10 average (24h), μg/m3
-    :param so2_1h: SO2 average (1h), ppm
-    :return: US AQI, dict with aqi values
+    :param so2_max_1h: SO2 maximum (max in 1h), ppm
+    :return: CAQI Europe, dict with aqi values
             keys are: no2_1h, so2_1h, o3_1h, co_1h, pm25_1h, pm25_24h, pm10_1h, pm10_24h
              -1 means AQI is not available
     """
     aqi_data = {}
-    if no2_1h:
-        aqi_data['no2_1h'] = get_caqi_no2_1h(no2_1h)
-    if so2_1h:
-        aqi_data['so2_1h'] = get_caqi_so2_1h(so2_1h)
-    if o3_1h:
-        aqi_data['o3_1h'] = get_caqi_o3_1h(o3_1h)
+    if no2_max_1h:
+        aqi_data['no2_1h'] = get_caqi_no2_1h(no2_max_1h)
+    if so2_max_1h:
+        aqi_data['so2_1h'] = get_caqi_so2_1h(so2_max_1h)
+    if o3_max_1h:
+        aqi_data['o3_1h'] = get_caqi_o3_1h(o3_max_1h)
     if co_1h:
         aqi_data['co_1h'] = get_caqi_co_1h(co_1h)
     if pm25_1h:
@@ -141,8 +140,6 @@ def get_caqi(co_1h: float = None, o3_1h: float = None, no2_1h: float = None, pm2
         aqi_data['pm10_1h'] = get_caqi_pm10_1h(pm10_1h)
     if pm10_24h:
         aqi_data['pm10_24h'] = get_caqi_pm10_24h(pm10_24h)
-    if so2_1h:
-        aqi_data['so2_1h'] = get_caqi_so2_1h(so2_1h)
     if len(aqi_data) == 0:
         return AQI_NOT_AVAILABLE, aqi_data
     return max(list(map(lambda x: x, aqi_data.values()))), aqi_data

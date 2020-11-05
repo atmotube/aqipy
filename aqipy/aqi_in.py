@@ -29,7 +29,7 @@ IN_PB_24H = ((0.000, 0.058), (0.059, 0.129), (0.130, 0.247), (0.248, 0.365), (0.
 
 def get_aqi_o3_8h(o3_8h: float) -> (int, str, str):
     """
-    Calculates O3 India AQI
+    Calculates O3 (8h) India AQI
 
     :param o3_8h: O3 average (8h), ppm
     :return: O3 India AQI, Effect message, Caution message
@@ -40,7 +40,7 @@ def get_aqi_o3_8h(o3_8h: float) -> (int, str, str):
 
 def get_aqi_co_8h(co_8h: float) -> (int, str, str):
     """
-    Calculates CO India AQI
+    Calculates CO (8h) India AQI
 
     :param co_8h: CO average (8h), ppm
     :return: CO India AQI, Effect message, Caution message
@@ -51,7 +51,7 @@ def get_aqi_co_8h(co_8h: float) -> (int, str, str):
 
 def get_aqi_no2_24h(no2_24h: float) -> (int, str, str):
     """
-    Calculates NO2 India AQI
+    Calculates NO2 (24h) India AQI
 
     :param no2_24h: NO2 average (24h), ppm
     :return: NO2 India AQI, Effect message, Caution message
@@ -62,7 +62,7 @@ def get_aqi_no2_24h(no2_24h: float) -> (int, str, str):
 
 def get_aqi_so2_24h(so2_24h: float) -> (int, str, str):
     """
-    Calculates SO2 India AQI
+    Calculates SO2 (24h) India AQI
 
     :param so2_24h: SO2 average (24h), ppm
     :return: SO2 India AQI, Effect message, Caution message
@@ -73,7 +73,7 @@ def get_aqi_so2_24h(so2_24h: float) -> (int, str, str):
 
 def get_aqi_nh3_24h(nh3_24h: float) -> (int, str, str):
     """
-    Calculates NH3 India AQI
+    Calculates NH3 (24h) India AQI
 
     :param nh3_24h: NH3 average (24h), ppm
     :return: NH3 India AQI, Effect message, Caution message
@@ -84,7 +84,7 @@ def get_aqi_nh3_24h(nh3_24h: float) -> (int, str, str):
 
 def get_aqi_pb_24h(pb_24h: float) -> (int, str, str):
     """
-    Calculates Pb India AQI
+    Calculates Pb (24h) India AQI
 
     :param pb_24h: Pb average (24h), ppm
     :return: Pb India AQI, Effect message, Caution message
@@ -95,7 +95,7 @@ def get_aqi_pb_24h(pb_24h: float) -> (int, str, str):
 
 def get_aqi_pm25_24h(pm25_24h: float) -> (int, str, str):
     """
-    Calculates PM2.5 India AQI
+    Calculates PM2.5 (24h) India AQI
 
     :param pm25_24h: PM2.5 average (24h), μg/m3
     :return: PM2.5 India AQI, Effect message, Caution message
@@ -106,7 +106,7 @@ def get_aqi_pm25_24h(pm25_24h: float) -> (int, str, str):
 
 def get_aqi_pm10_24h(pm10_24h: float) -> (int, str, str):
     """
-    Calculates PM10 India AQI
+    Calculates PM10 (24h) India AQI
 
     :param pm10_24h: PM10 average (24h), μg/m3
     :return: PM10 India AQI, Effect message, Caution message
@@ -129,7 +129,7 @@ def get_aqi(o3_8h: float = None, co_8h: float = None, pm25_24h: float = None,
     :param no2_24h: NO2 average (24h), ppm
     :param nh3_24h: HN3 average (24h), ppm
     :param pb_24h: Pb average (24h), ppm
-    :return: US AQI, dict with tuples (Individual aqi, Effect message, Caution message)
+    :return: India AQI, dict with tuples (Individual aqi, Effect message, Caution message)
              keys are: o3_8h, co_8h, pm25_24h, pm10_24h, so2_24h, no2_24h, nh3_24h, pb_24h
              -1 means AQI is not available
     """

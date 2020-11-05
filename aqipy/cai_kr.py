@@ -25,7 +25,7 @@ KR_AQI_GENERAL = (
 
 def get_cai_o3_1h(o3_1h: float) -> (int, str, str):
     """
-    Calculates O3 South Korea CAI
+    Calculates O3 (1h) South Korea CAI
 
     :param o3_1h: O3 average (1h), ppm
     :return: O3 South Korea CAI, General message, Risk message
@@ -36,7 +36,7 @@ def get_cai_o3_1h(o3_1h: float) -> (int, str, str):
 
 def get_cai_co_1h(co_1h: float) -> (int, str, str):
     """
-    Calculates O3 South Korea CAI
+    Calculates CO (1h) South Korea CAI
 
     :param co_1h: CO average (1h), ppm
     :return: CO South Korea CAI, General message, Risk message
@@ -47,7 +47,7 @@ def get_cai_co_1h(co_1h: float) -> (int, str, str):
 
 def get_cai_so2_1h(so2_1h: float) -> (int, str, str):
     """
-    Calculates SO2 South Korea CAI
+    Calculates SO2 (1h) South Korea CAI
 
     :param so2_1h: SO2 average (1h), ppm
     :return: SO2 South Korea CAI, General message, Risk message
@@ -58,7 +58,7 @@ def get_cai_so2_1h(so2_1h: float) -> (int, str, str):
 
 def get_cai_no2_1h(no2_1h: float) -> (int, str, str):
     """
-    Calculates NO2 South Korea CAI
+    Calculates NO2 (1h) South Korea CAI
 
     :param no2_1h: NO2 average (1h), ppm
     :return: NO2 South Korea CAI, General message, Risk message
@@ -69,9 +69,9 @@ def get_cai_no2_1h(no2_1h: float) -> (int, str, str):
 
 def get_cai_pm25_24h(pm25_24h: float) -> (int, str, str):
     """
-    Calculates PM2.5 South Korea CAI
+    Calculates PM2.5 (24h) South Korea CAI
 
-    :param pm25_24h: PM2.5 average (1h), ppm
+    :param pm25_24h: PM2.5 average (24h), μg/m3
     :return: PM2.5 South Korea CAI, General message, Risk message
     """
     cp = __round_down(pm25_24h)
@@ -80,9 +80,9 @@ def get_cai_pm25_24h(pm25_24h: float) -> (int, str, str):
 
 def get_cai_pm10_24h(pm10_24h: float) -> (int, str, str):
     """
-    Calculates PM10 South Korea CAI
+    Calculates PM10 (24h) South Korea CAI
 
-    :param pm10_24h: PM10 average (1h), ppm
+    :param pm10_24h: PM10 average (24h), μg/m3
     :return: PM10 South Korea CAI, General message, Risk message
     """
     cp = __round_down(pm10_24h)
@@ -101,7 +101,7 @@ def get_aqi(o3_1h: float = None, co_1h: float = None, so2_1h: float = None, no2_
     :param pm25_24h: PM2.5 average (24h), μg/m3
     :param pm10_24h: PM10 average (24h), μg/m3
     :return: South Korea CAI, dict with tuples (Individual aqi, General message, Risk message)
-            keys are: o3_1h, co_1h, so2_1h, no2_1h, pm25_24h, pm10_24h
+             keys are: o3_1h, co_1h, so2_1h, no2_1h, pm25_24h, pm10_24h
              -1 means AQI is not available
     """
     aqi_data = {}

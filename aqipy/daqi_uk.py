@@ -52,7 +52,7 @@ def __get_daqi(val: float, array: [[]]) -> (int, str, str):
 
 def get_daqi_o3_1h(o3_1h: float) -> (int, str, str):
     """
-    Calculates O3 UK DAQI
+    Calculates O3 (1h) UK DAQI
 
     :param o3_1h: O3 average (1h), ppm
     :return: O3 UK DAQI, Effect message, Caution message
@@ -63,7 +63,7 @@ def get_daqi_o3_1h(o3_1h: float) -> (int, str, str):
 
 def get_daqi_no2_1h(no2_1h: float) -> (int, str, str):
     """
-    Calculates NO2 UK DAQI
+    Calculates NO2 (1h) UK DAQI
 
     :param no2_1h: NO2 average (1h), ppm
     :return: NO2 UK DAQI, Effect message, Caution message
@@ -74,9 +74,9 @@ def get_daqi_no2_1h(no2_1h: float) -> (int, str, str):
 
 def get_daqi_so2_15m(so2_15m: float) -> (int, str, str):
     """
-    Calculates SO2 UK DAQI
+    Calculates SO2 (15m) UK DAQI
 
-    :param so2_15m: SO2 average (1h), ppm
+    :param so2_15m: SO2 average (15m), ppm
     :return: SO2 UK DAQI, Effect message, Caution message
     """
     cp = __round_down(so2_15m * 1000)
@@ -108,15 +108,15 @@ def get_aqi_pm10_24h(pm10_24h: float) -> (int, str, str):
 def get_daqi(o3_1h: float = None, no2_1h: float = None, so2_15m: float = None,
             pm25_24h: float = None, pm10_24h: float = None) -> (int, {}):
     """
-    Calculates US AQI (Maximum from individual indexes)
+    Calculates DAQI UK (Maximum from individual indexes)
 
     :param o3_1h: O3 average (1h), ppm
     :param no2_1h: NO2 average (1h), ppm
     :param so2_15m: SO3 average (15m), ppm
     :param pm25_24h: PM2.5 average (24h), μg/m3
     :param pm10_24h: PM10 average (24h), μg/m3
-    :return: US AQI, dict with tuples (Individual aqi, Effect message, Caution message)
-            keys are: o3_1h,
+    :return: DAQI UK, dict with tuples (Individual aqi, Effect message, Caution message)
+             keys are: o3_1h, no2_1h, so2_15m, pm25_24h, pm10_24h
              -1 means AQI is not available
     """
     aqi_data = {}
