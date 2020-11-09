@@ -210,7 +210,7 @@ def get_aqi(co_8h: float = None, o3_1h: float = None, o3_8h: float = None, no2_1
     aqi_data = {}
     if co_8h:
         aqi_data['co_8h'] = get_aqi_co_8h(co_8h)
-    if o3_1h:
+    if o3_1h and bool(__round_down(o3_1h, 3)):
         aqi_data['o3_1h'] = get_aqi_o3_1h(o3_1h)
     if o3_8h:
         aqi_data['o3_8h'] = get_aqi_o3_8h(o3_8h)

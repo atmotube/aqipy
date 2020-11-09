@@ -1,6 +1,11 @@
 from aqipy import aqhi_hk
 
 
+def test_get_aqi_none():
+    aqhi, text1, text2 = aqhi_hk.get_aqhi(None, None, None, None, None)
+    assert aqhi == -1
+
+
 def test_get_aqi_ozone_8h():
     aqhi, text1, text2 = aqhi_hk.get_aqhi(0.015, 0, 0, 150, 20)
     assert aqhi == 5

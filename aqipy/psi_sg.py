@@ -122,7 +122,7 @@ def get_aqi(o3_8h: float = None, no2_1h: float = None, so2_24h: float = None,
     aqi_data = {}
     if o3_8h:
         aqi_data['o3_8h'] = get_psi_o3_8h(o3_8h)
-    if no2_1h:
+    if no2_1h and bool(__round_down(no2_1h, 3)):
         aqi_data['no2_1h'] = get_psi_no2_1h(no2_1h)
     if so2_24h:
         aqi_data['so2_24h'] = get_psi_so2_24h(so2_24h)

@@ -7,7 +7,7 @@
             https://www.gov.hk/en/residents/environment/air/aqhi.htm
 """
 
-from aqipy.utils import __get_aqi_texts, __added_risk
+from aqipy.utils import AQI_NOT_AVAILABLE, __get_aqi_texts, __added_risk
 
 HK_AR = (
     (0.00, 1.87), (1.88, 3.76), (3.76, 5.63), (5.64, 7.51), (7.52, 9.40), (9.41, 11.28), (11.29, 12.90), (12.91, 15.06),
@@ -58,6 +58,8 @@ def get_aqhi(o3_3h: float, no2_3h: float, so2_3h: float, pm25_3h: float, pm10_3h
     :param pm10_3h: PM10 average (3h), μg/m3
     :return: Hong Kong AQHI, Effect message, Caution message
     """
+    if any(value is None for value in (o3_3h, no2_3h, so2_3h, pm10_3h, pm25_3h)):
+        return AQI_NOT_AVAILABLE, "", ""
     betas = [0.0004462559, 0.0001393235, 0.0005116328, 0.0002821751, 0.0002180567]
     c = [no2_3h * 1000 * NO2_PPB_UGM3, so2_3h * 1000 * SO2_PPB_UGM3, o3_3h * 1000 * O3_PPB_UGM3, pm10_3h, pm25_3h]
     ars = list(map(__added_risk, betas, c))
