@@ -19,6 +19,16 @@ def test_get_aqi_ozone_8h():
     assert aqi_data['co_1h'][0] == 72
 
 
+def test_get_aqi_ozone_8h_with_level():
+    aqi, aqi_data = cai_kr.get_aqi(o3_1h=0.07853333, with_level=True)
+    assert aqi == 90
+    assert aqi_data.get('level') == 'moderate'
+
+
+def test_levels():
+    assert len(cai_kr.KR_CAI) == len(cai_kr.KR_CAI_LEVELS)
+
+
 def test_labels():
     assert len(cai_kr.KR_CAI) == len(cai_kr.KR_AQI_GENERAL)
 

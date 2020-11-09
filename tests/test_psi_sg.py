@@ -19,6 +19,16 @@ def test_get_psi_ozone_8h():
     assert aqi_data['co_8h'][0] == 57
 
 
+def test_get_psi_ozone_8h_with_level():
+    aqi, aqi_data = psi_sg.get_aqi(o3_8h=0.07853333, with_level=True)
+    assert aqi == 100
+    assert aqi_data.get('level') == 'moderate'
+
+
+def test_levels():
+    assert len(psi_sg.SG_PSI) == len(psi_sg.SG_PSI_LEVELS)
+
+
 def test_labels():
     assert len(psi_sg.SG_PSI) == len(psi_sg.SG_AQI_GENERAL)
     assert len(psi_sg.SG_PSI) == len(psi_sg.SG_AQI_RISK)

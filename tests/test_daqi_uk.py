@@ -17,6 +17,16 @@ def test_get_caqi_ozone_8h():
     assert aqi_data['pm25_24h'][0] == 1
 
 
+def test_get_caqi_ozone_8h_with_level():
+    caqi, aqi_data = daqi_uk.get_daqi(o3_1h=0.07853333, with_level=True)
+    assert caqi == 6
+    assert aqi_data.get('level') == 'moderate'
+
+
+def test_levels():
+    assert len(daqi_uk.UK_AQI) == len(daqi_uk.UK_AQI_LEVELS)
+
+
 def test_max():
     aqi, text1, text2 = daqi_uk.get_daqi_o3_1h(10)
     assert aqi == 10
