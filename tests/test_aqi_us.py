@@ -19,6 +19,12 @@ def test_get_aqi_ozone_8h():
     assert aqi_data['co_8h'][0] == 56
 
 
+def test_division_by_zero():
+    aqi, aqi_data = aqi_us.get_aqi(o3_1h=0.0001)
+    assert aqi
+    assert aqi_data
+
+
 def test_labels():
     assert len(aqi_us.US_AQI) == len(aqi_us.US_OZONE_EFFECTS)
     assert len(aqi_us.US_AQI) == len(aqi_us.US_OZONE_CAUTIONS)
