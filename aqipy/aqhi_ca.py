@@ -6,7 +6,7 @@
             https://en.wikipedia.org/wiki/Air_Quality_Health_Index_(Canada)
 """
 
-from aqipy.utils import __get_aqi_texts, __added_risk
+from aqipy.utils import AQI_NOT_AVAILABLE, __get_aqi_texts, __added_risk
 
 CA_AQHI = ((1, 3), (4, 6), (7, 10), (11, 11))
 
@@ -35,6 +35,8 @@ def get_aqhi(o3_3h: float, no2_3h: float, pm25_3h: float, pm10_3h: float) -> (fl
     :param pm10_3h: PM10 average (3h), μg/m3
     :return: CA AQHI, General message, Risk message
     """
+    if any(value is None for value in (o3_3h, no2_3h, pm10_3h, pm25_3h)):
+        return AQI_NOT_AVAILABLE, "", ""
     betas = [0.000537, 0.000871, 0.000487, 0.000297]
     c = [o3_3h * 1000, no2_3h * 1000, pm25_3h, pm10_3h]
     ars = list(map(__added_risk, betas, c))

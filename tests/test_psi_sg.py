@@ -19,6 +19,11 @@ def test_get_psi_ozone_8h():
     assert aqi_data['co_8h'][0] == 57
 
 
+def test_division_by_zero():
+    aqi, aqi_data = psi_sg.get_aqi(no2_1h=0.0001)
+    assert aqi == -1
+
+
 def test_labels():
     assert len(psi_sg.SG_PSI) == len(psi_sg.SG_AQI_GENERAL)
     assert len(psi_sg.SG_PSI) == len(psi_sg.SG_AQI_RISK)
