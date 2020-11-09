@@ -5,9 +5,11 @@
     Source: https://core.ac.uk/download/pdf/38094372.pdf
 """
 
-from aqipy.utils import AQI_NOT_AVAILABLE, __round_down, __get_aqi_general_formula_texts
+from aqipy.utils import AQI_NOT_AVAILABLE, __round_down, __get_aqi_general_formula_texts, __get_aqi_level
 
 CN_AQI = ((0, 50), (51, 100), (101, 150), (151, 200), (201, 299), (300, 300))
+CN_AQI_LEVELS = (
+'excellent', 'good', 'lightly_polluted', 'moderately_polluted', 'heavily_polluted', 'severely_polluted')
 CN_AQI_EFFECTS = (
     "No health implications.",
     "Some pollutants may slightly affect very few hypersensitive individuals.",
@@ -111,7 +113,8 @@ def get_aqi_no2_24h(no2_24h: float) -> (int, str, str):
 
 
 def get_aqi(o3_1h: float = None, o3_8h: float = None, co_24h: float = None, pm25_24h: float = None,
-            pm10_24h: float = None, so2_24h: float = None, no2_24h: float = None) -> (int, {}):
+            pm10_24h: float = None, so2_24h: float = None, no2_24h: float = None, with_level: bool = False) -> (
+int, {}):
     """
     Calculates CN AQI (Maximum from individual indexes)
 
@@ -122,6 +125,7 @@ def get_aqi(o3_1h: float = None, o3_8h: float = None, co_24h: float = None, pm25
     :param pm10_24h: PM10 average (24h), μg/m3
     :param so2_24h: SO2 average (24h), ppm
     :param no2_24h: NO2 average (24h), ppm
+    :param with_level: Boolean distinguishing whether to print AQI level such as 'good' or 'hazardous'
     :return: CN AQI, dict with tuples (Individual aqi, Effect message, Caution message)
              keys are: o3_1h, o3_8h, co_24h, pm25_24h, pm10_24h, so2_24h, no2_24h
              -1 means AQI is not available
@@ -143,4 +147,7 @@ def get_aqi(o3_1h: float = None, o3_8h: float = None, co_24h: float = None, pm25
         aqi_data['no2_24h'] = get_aqi_no2_24h(no2_24h)
     if len(aqi_data) == 0:
         return AQI_NOT_AVAILABLE, aqi_data
-    return max(list(map(lambda x: x[0], aqi_data.values()))), aqi_data
+    value = max(list(map(lambda x: x[0], aqi_data.values())))
+    if not with_level:
+        return value, aqi_data
+    return value, __get_aqi_level(value, CN_AQI, CN_AQI_LEVELS)

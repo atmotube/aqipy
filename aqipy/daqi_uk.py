@@ -6,8 +6,11 @@
             https://uk-air.defra.gov.uk/assets/documents/reports/cat14/1304251155_Update_on_Implementation_of_the_DAQI_April_2013_Final.pdf
 """
 
-from aqipy.utils import AQI_NOT_AVAILABLE, __round_down, __get_aqi_general_formula, __get_aqi_general_formula_texts
+from aqipy.utils import AQI_NOT_AVAILABLE, __round_down, __get_aqi_general_formula, __get_aqi_general_formula_texts, \
+    __get_aqi_level
 
+UK_AQI = ((1, 3), (4, 6), (7, 9), (10, 10))
+UK_AQI_LEVELS = ('low', 'moderate', 'high', 'very_high')
 UK_O3_1H = ((0, 16), (17, 33), (34, 50), (51, 60), (61, 70), (71, 80), (81, 93), (94, 106), (107, 120), (121, 121))
 UK_NO2_1H = (
     (0, 35), (36, 71), (72, 106), (107, 142), (143, 177), (178, 212), (213, 248), (249, 284), (285, 319), (320, 320))
@@ -106,7 +109,7 @@ def get_aqi_pm10_24h(pm10_24h: float) -> (int, str, str):
 
 
 def get_daqi(o3_1h: float = None, no2_1h: float = None, so2_15m: float = None,
-            pm25_24h: float = None, pm10_24h: float = None) -> (int, {}):
+             pm25_24h: float = None, pm10_24h: float = None, with_level: bool = False) -> (int, {}):
     """
     Calculates DAQI UK (Maximum from individual indexes)
 
@@ -115,6 +118,7 @@ def get_daqi(o3_1h: float = None, no2_1h: float = None, so2_15m: float = None,
     :param so2_15m: SO3 average (15m), ppm
     :param pm25_24h: PM2.5 average (24h), μg/m3
     :param pm10_24h: PM10 average (24h), μg/m3
+    :param with_level: Boolean distinguishing whether to print AQI level such as 'good' or 'hazardous'
     :return: DAQI UK, dict with tuples (Individual aqi, Effect message, Caution message)
              keys are: o3_1h, no2_1h, so2_15m, pm25_24h, pm10_24h
              -1 means AQI is not available
@@ -132,4 +136,7 @@ def get_daqi(o3_1h: float = None, no2_1h: float = None, so2_15m: float = None,
         aqi_data['pm10_24h'] = get_aqi_pm10_24h(pm10_24h)
     if len(aqi_data) == 0:
         return AQI_NOT_AVAILABLE, aqi_data
-    return max(list(map(lambda x: x[0], aqi_data.values()))), aqi_data
+    value = max(list(map(lambda x: x[0], aqi_data.values())))
+    if not with_level:
+        return value, aqi_data
+    return value, __get_aqi_level(value, UK_AQI, UK_AQI_LEVELS)

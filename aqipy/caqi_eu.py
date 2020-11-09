@@ -5,9 +5,10 @@
     Source: https://www.airqualitynow.eu/download/CITEAIR-Comparing_Urban_Air_Quality_across_Borders.pdf
 """
 
-from aqipy.utils import AQI_NOT_AVAILABLE, __round_down, __get_aqi_general_formula
+from aqipy.utils import AQI_NOT_AVAILABLE, __round_down, __get_aqi_general_formula, __get_aqi_level
 
 EU_CAQI = ((0, 24), (25, 49), (50, 74), (75, 99), (100, 100))
+EU_CAQI_LEVELS = ('very_low', 'low', 'medium', 'high', 'very_high')
 EU_NO2_1H = ((0, 26), (27, 52), (53, 105), (106, 212), (213, 213))
 EU_PM10_1H = ((0, 24), (25, 49), (50, 89), (90, 179), (180, 180))
 EU_PM10_24H = ((0, 14), (15, 29), (30, 49), (50, 99), (100, 100))
@@ -107,7 +108,8 @@ def get_caqi_pm10_24h(pm10_24h: float) -> float:
 
 
 def get_caqi(co_1h: float = None, o3_max_1h: float = None, no2_max_1h: float = None, pm25_24h: float = None,
-             pm25_1h: float = None, pm10_1h: float = None, pm10_24h: float = None, so2_max_1h: float = None) -> (int, {}):
+             pm25_1h: float = None, pm10_1h: float = None, pm10_24h: float = None, so2_max_1h: float = None,
+             with_level: bool = False) -> (int, {}):
     """
     Calculates CAQI Europe (Maximum from individual indexes)
 
@@ -119,6 +121,7 @@ def get_caqi(co_1h: float = None, o3_max_1h: float = None, no2_max_1h: float = N
     :param pm10_1h: PM10 average (1h), μg/m3
     :param pm10_24h: PM10 average (24h), μg/m3
     :param so2_max_1h: SO2 maximum (max in 1h), ppm
+    :param with_level: Boolean distinguishing whether to print AQI level such as 'good' or 'hazardous'
     :return: CAQI Europe, dict with aqi values
             keys are: no2_1h, so2_1h, o3_1h, co_1h, pm25_1h, pm25_24h, pm10_1h, pm10_24h
              -1 means AQI is not available
@@ -142,4 +145,7 @@ def get_caqi(co_1h: float = None, o3_max_1h: float = None, no2_max_1h: float = N
         aqi_data['pm10_24h'] = get_caqi_pm10_24h(pm10_24h)
     if len(aqi_data) == 0:
         return AQI_NOT_AVAILABLE, aqi_data
-    return max(list(map(lambda x: x, aqi_data.values()))), aqi_data
+    value = max(list(map(lambda x: x, aqi_data.values())))
+    if not with_level:
+        return value, aqi_data
+    return value, __get_aqi_level(value, EU_CAQI, EU_CAQI_LEVELS)

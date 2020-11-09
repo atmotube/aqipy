@@ -6,9 +6,10 @@
             https://www.environment.nsw.gov.au/topics/air/understanding-air-quality-data/air-quality-index
 """
 
-from aqipy.utils import AQI_NOT_AVAILABLE, __get_aqi_texts, __round_down
+from aqipy.utils import AQI_NOT_AVAILABLE, __get_aqi_texts, __round_down, __get_aqi_level
 
 AU_AQI = ((0, 33), (34, 66), (67, 99), (100, 149), (150, 200), (201, 201))
+AU_AQI_LEVELS = ('very_good', 'good', 'fair', 'poor', 'very_poor', 'hazardous')
 
 AU_AQI_GENERAL = (
     "Enjoy normal activities",
@@ -120,8 +121,8 @@ def get_aqi_pm10_24h(pm10_24h: float) -> (int, str, str):
     return __get_aqi(cp, AU_PM10_NEPM_STANDARD_24H)
 
 
-def get_aqi(o3_1h: float = None, o3_4h: float = None, co_8h: float = None,
-            no2_1h: float = None, so2_24h: float = None, pm25_24h: float = None, pm10_24h: float = None) -> (int, {}):
+def get_aqi(o3_1h: float = None, o3_4h: float = None, co_8h: float = None, no2_1h: float = None, so2_24h: float = None,
+            pm25_24h: float = None, pm10_24h: float = None, with_level: bool = False) -> (int, {}):
     """
     Calculates AU AQI (Maximum from individual indexes)
 
@@ -132,6 +133,7 @@ def get_aqi(o3_1h: float = None, o3_4h: float = None, co_8h: float = None,
     :param so2_24h: SO2 average (24h), ppm
     :param pm25_24h: PM2.5 average (24h), μg/m3
     :param pm10_24h: PM10 average (24h), μg/m3
+    :param with_level: Boolean distinguishing whether to print AQI level such as 'good' or 'hazardous'
     :return: AU AQI, dict with tuples (Individual aqi, General message, Risk message)
              keys are: o3_1h, o3_4h, co_8h, no2_1h, so2_24h, pm25_24h, pm10_24h
              -1 means AQI is not available
@@ -153,4 +155,7 @@ def get_aqi(o3_1h: float = None, o3_4h: float = None, co_8h: float = None,
         aqi_data['pm10_24h'] = get_aqi_pm10_24h(pm10_24h)
     if len(aqi_data) == 0:
         return AQI_NOT_AVAILABLE, aqi_data
-    return max(list(map(lambda x: x[0], aqi_data.values()))), aqi_data
+    value = max(list(map(lambda x: x[0], aqi_data.values())))
+    if not with_level:
+        return value, aqi_data
+    return value, __get_aqi_level(value, AU_AQI, AU_AQI_LEVELS)
