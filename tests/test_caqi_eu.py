@@ -15,6 +15,16 @@ def test_get_caqi_ozone_8h():
     assert aqi_data['co_1h'] == 32
 
 
+def test_get_caqi_ozone_8h_with_level():
+    caqi, aqi_data = caqi_eu.get_caqi(o3_max_1h=0.07853333, with_level=True)
+    assert caqi == 65
+    assert aqi_data.get('level') == 'medium'
+
+
+def test_levels():
+    assert len(caqi_eu.EU_CAQI) == len(caqi_eu.EU_CAQI_LEVELS)
+
+
 def test_max():
     aqi = caqi_eu.get_caqi_o3_1h(100)
     assert aqi == 100

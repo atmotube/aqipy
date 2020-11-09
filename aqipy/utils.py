@@ -8,6 +8,8 @@ def __get_aqi_texts(aqi: int, aqi_a: [], a1: [], a2: []) -> (str, str):
     for i in range(len(aqi_a)):
         if aqi_a[i][0] <= aqi <= aqi_a[i][1]:
             return a1[i], a2[i]
+    if aqi > aqi_a[-1][1]:
+        return a1[-1], a2[-1]
     return "", ""
 
 
@@ -56,3 +58,12 @@ def __get_aqi_general_formula_texts(cp: float, av: [], a1: [], a2: [], aqi_a: []
 def __added_risk(beta, c):
     ar = math.expm1(beta * float(c)) * 100.0
     return ar
+
+
+def __get_aqi_level(aqi, levels, levels_names):
+    for i in range(len(levels)):
+        if levels[i][0] <= aqi <= levels[i][1]:
+            return levels_names[i]
+    if aqi > levels[-1][1]:
+        return levels_names[-1]
+    return ""

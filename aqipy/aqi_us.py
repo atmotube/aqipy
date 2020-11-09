@@ -5,9 +5,10 @@
     Source: https://www.airnow.gov/sites/default/files/2018-05/aqi-technical-assistance-document-may2016.pdf
 """
 
-from aqipy.utils import AQI_NOT_AVAILABLE, __round_down, __get_aqi_general_formula_texts
+from aqipy.utils import AQI_NOT_AVAILABLE, __round_down, __get_aqi_general_formula_texts, __get_aqi_level
 
 US_AQI = ((0, 50), (51, 100), (101, 150), (151, 200), (201, 300), (301, 500))
+US_AQI_LEVELS = ('good', 'moderate', 'unhealthy sensitive', 'unhealthy', 'very unhealthy', 'hazardous')
 US_OZONE_8H = ((0, 0.054), (0.055, 0.070), (0.071, 0.085), (0.086, 0.105), (0.106, 0.200))
 US_OZONE_1H = ((0, 0), (0, 0), (0.125, 0.164), (0.165, 0.204), (0.205, 0.404), (0.405, 0.604))
 US_OZONE_EFFECTS = (
@@ -189,7 +190,7 @@ def get_aqi_no2_1h(no2_1h: float) -> (int, str, str):
 
 
 def get_aqi(co_8h: float = None, o3_1h: float = None, o3_8h: float = None, no2_1h: float = None, pm25_24h: float = None,
-            pm10_24h: float = None, so2_1h: float = None, so2_24h: float = None) -> (int, {}):
+            pm10_24h: float = None, so2_1h: float = None, so2_24h: float = None, with_level: bool = False) -> (int, {}):
     """
     Calculates US AQI (Maximum from individual indexes)
 
@@ -201,6 +202,7 @@ def get_aqi(co_8h: float = None, o3_1h: float = None, o3_8h: float = None, no2_1
     :param pm10_24h: PM10 average (24h), μg/m3
     :param so2_1h: SO2 average (1h), ppm
     :param so2_24h: SO2 average (24h), ppm
+    :param with_level: Boolean distinguishing whether to print AQI level such as 'good' or 'hazardous'
     :return: US AQI, dict with tuples (Individual aqi, Effect message, Caution message)
             keys are: co_8h, o3_1h, o3_8h, no2_1h, pm25_24h, pm10_24h, so2_1h, so2_24h
              -1 means AQI is not available
@@ -224,4 +226,7 @@ def get_aqi(co_8h: float = None, o3_1h: float = None, o3_8h: float = None, no2_1
         aqi_data['so2_24h'] = get_aqi_so2_24h(so2_24h)
     if len(aqi_data) == 0:
         return AQI_NOT_AVAILABLE, aqi_data
-    return max(list(map(lambda x: x[0], aqi_data.values()))), aqi_data
+    value = max(list(map(lambda x: x[0], aqi_data.values())))
+    if not with_level:
+        return value, aqi_data
+    return value, {'level': __get_aqi_level(value, US_AQI, US_AQI_LEVELS)}

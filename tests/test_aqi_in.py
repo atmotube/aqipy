@@ -19,6 +19,16 @@ def test_get_aqi_ozone_8h():
     assert aqi_data['co_8h'][0] == 171
 
 
+def test_get_aqi_ozone_8h_with_level():
+    aqi, aqi_data = aqi_in.get_aqi(o3_8h=0.07853333, with_level=True)
+    assert aqi == 223
+    assert aqi_data.get('level') == 'moderately polluted'
+
+
+def test_levels():
+    assert len(aqi_in.IN_AQI) == len(aqi_in.IN_AQI_LEVELS)
+
+
 def test_labels():
     assert len(aqi_in.IN_AQI) == len(aqi_in.IN_AQI_EFFECTS)
 

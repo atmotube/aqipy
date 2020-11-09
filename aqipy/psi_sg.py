@@ -7,9 +7,10 @@
             https://www-haze-gov-sg-admin.cwp.sg/docs/default-source/default-document-library/how-to-plan-your-outdoor-activities-during-haze.pdf
 """
 
-from aqipy.utils import AQI_NOT_AVAILABLE, __round_down, __get_aqi_general_formula_texts
+from aqipy.utils import AQI_NOT_AVAILABLE, __round_down, __get_aqi_general_formula_texts, __get_aqi_level
 
 SG_PSI = ((0, 50), (51, 100), (101, 200), (201, 300), (301, 400), (401, 500))
+SG_PSI_LEVELS = ('good', 'moderate', 'unhealthy', 'unhealthy', 'hazardous', 'hazardous')
 SG_PM25_24H = ((0, 12), (13, 55), (56, 150), (151, 250), (251, 350), (351, 500))
 SG_PM10_24H = ((0, 50), (51, 150), (151, 350), (351, 420), (421, 500), (501, 600))
 SG_SO2_24H = ((0, 30), (31, 139), (140, 304), (305, 610), (611, 801), (802, 1000))
@@ -103,7 +104,7 @@ def get_psi_pm10_24h(pm10_24h: float) -> (int, str, str):
 
 
 def get_aqi(o3_8h: float = None, no2_1h: float = None, so2_24h: float = None,
-            co_8h: float = None, pm25_24h: float = None, pm10_24h: float = None, ) -> (int, {}):
+            co_8h: float = None, pm25_24h: float = None, pm10_24h: float = None, with_level: bool = False) -> (int, {}):
     """
     Calculates Singapore PSI (Maximum from individual indexes)
 
@@ -113,6 +114,7 @@ def get_aqi(o3_8h: float = None, no2_1h: float = None, so2_24h: float = None,
     :param co_8h: CO average (8h), ppm
     :param pm25_24h: PM2.5 average (24h), μg/m3
     :param pm10_24h: PM10 average (24h), μg/m3
+    :param with_level: Boolean distinguishing whether to print AQI level such as 'good' or 'hazardous'
     :return: Singapore PSI, dict with tuples (Individual PSI, General message, Risk message)
             keys are: o3_8h, no2_1h, so2_24h, co_8h, pm25_24h, pm10_24h
              -1 means AQI is not available
@@ -132,4 +134,7 @@ def get_aqi(o3_8h: float = None, no2_1h: float = None, so2_24h: float = None,
         aqi_data['pm10_24h'] = get_psi_pm10_24h(pm10_24h)
     if len(aqi_data) == 0:
         return AQI_NOT_AVAILABLE, aqi_data
-    return max(list(map(lambda x: x[0], aqi_data.values()))), aqi_data
+    value = max(list(map(lambda x: x[0], aqi_data.values())))
+    if not with_level:
+        return value, aqi_data
+    return value, {'level': __get_aqi_level(value, SG_PSI, SG_PSI_LEVELS)}

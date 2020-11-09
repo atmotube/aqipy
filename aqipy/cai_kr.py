@@ -5,9 +5,10 @@
     Source: http://www.airkorea.or.kr/eng/khaiInfo?pMENU_NO=166
 """
 
-from aqipy.utils import AQI_NOT_AVAILABLE, __round_down, __get_aqi_general_formula_texts
+from aqipy.utils import AQI_NOT_AVAILABLE, __round_down, __get_aqi_general_formula_texts, __get_aqi_level
 
 KR_CAI = ((0, 50), (51, 100), (101, 250), (251, 500))
+KR_CAI_LEVELS = ('good', 'moderate', 'unhealthy', 'very unhealthy')
 KR_O3_1H = ((0, 0.03), (0.031, 0.09), (0.091, 0.15), (0.151, 0.6))
 KR_CO_1H = ((0, 2), (2.01, 9), (9.01, 15), (15.01, 50))
 KR_SO2_1H = ((0, 0.02), (0.021, 0.05), (0.051, 0.15), (0.151, 1))
@@ -90,7 +91,7 @@ def get_cai_pm10_24h(pm10_24h: float) -> (int, str, str):
 
 
 def get_aqi(o3_1h: float = None, co_1h: float = None, so2_1h: float = None, no2_1h: float = None,
-            pm25_24h: float = None, pm10_24h: float = None) -> (int, {}):
+            pm25_24h: float = None, pm10_24h: float = None, with_level: bool = False) -> (int, {}):
     """
     Calculates South Korea CAI (Maximum from individual indexes)
 
@@ -100,6 +101,7 @@ def get_aqi(o3_1h: float = None, co_1h: float = None, so2_1h: float = None, no2_
     :param no2_1h: NO2 average (1h), ppm
     :param pm25_24h: PM2.5 average (24h), μg/m3
     :param pm10_24h: PM10 average (24h), μg/m3
+    :param with_level: Boolean distinguishing whether to print AQI level such as 'good' or 'hazardous'
     :return: South Korea CAI, dict with tuples (Individual aqi, General message, Risk message)
              keys are: o3_1h, co_1h, so2_1h, no2_1h, pm25_24h, pm10_24h
              -1 means AQI is not available
@@ -119,4 +121,7 @@ def get_aqi(o3_1h: float = None, co_1h: float = None, so2_1h: float = None, no2_
         aqi_data['pm10_24h'] = get_cai_pm10_24h(pm10_24h)
     if len(aqi_data) == 0:
         return AQI_NOT_AVAILABLE, aqi_data
-    return max(list(map(lambda x: x[0], aqi_data.values()))), aqi_data
+    value = max(list(map(lambda x: x[0], aqi_data.values())))
+    if not with_level:
+        return value, aqi_data
+    return value, {'level': __get_aqi_level(value, KR_CAI, KR_CAI_LEVELS)}

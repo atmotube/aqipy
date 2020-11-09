@@ -5,9 +5,10 @@
     Source: http://www.indiaenvironmentportal.org.in/files/file/Air%20Quality%20Index.pdf
 """
 
-from aqipy.utils import AQI_NOT_AVAILABLE, __round_down, __get_aqi_general_formula_texts
+from aqipy.utils import AQI_NOT_AVAILABLE, __round_down, __get_aqi_general_formula_texts, __get_aqi_level
 
 IN_AQI = ((0, 50), (51, 100), (101, 250), (251, 350), (351, 400), (401, 500))
+IN_AQI_LEVELS = ('good', 'satisfactory', 'moderately polluted', 'poor', 'very poor', 'severe')
 IN_AQI_EFFECTS = (
     "Minimal impact",
     "May cause minor breathing discomfort to sensitive people.",
@@ -117,7 +118,7 @@ def get_aqi_pm10_24h(pm10_24h: float) -> (int, str, str):
 
 def get_aqi(o3_8h: float = None, co_8h: float = None, pm25_24h: float = None,
             pm10_24h: float = None, so2_24h: float = None, no2_24h: float = None,
-            nh3_24h: float = None, pb_24h: float = None) -> (int, {}):
+            nh3_24h: float = None, pb_24h: float = None, with_level: bool = False) -> (int, {}):
     """
     Calculates India AQI (Maximum from individual indexes)
 
@@ -129,6 +130,7 @@ def get_aqi(o3_8h: float = None, co_8h: float = None, pm25_24h: float = None,
     :param no2_24h: NO2 average (24h), ppm
     :param nh3_24h: HN3 average (24h), ppm
     :param pb_24h: Pb average (24h), ppm
+    :param with_level: Boolean distinguishing whether to print AQI level such as 'good' or 'hazardous'
     :return: India AQI, dict with tuples (Individual aqi, Effect message, Caution message)
              keys are: o3_8h, co_8h, pm25_24h, pm10_24h, so2_24h, no2_24h, nh3_24h, pb_24h
              -1 means AQI is not available
@@ -152,4 +154,7 @@ def get_aqi(o3_8h: float = None, co_8h: float = None, pm25_24h: float = None,
         aqi_data['pb_24h'] = get_aqi_pb_24h(pb_24h)
     if len(aqi_data) == 0:
         return AQI_NOT_AVAILABLE, aqi_data
-    return max(list(map(lambda x: x[0], aqi_data.values()))), aqi_data
+    value = max(list(map(lambda x: x[0], aqi_data.values())))
+    if not with_level:
+        return value, aqi_data
+    return value, {'level': __get_aqi_level(value, IN_AQI, IN_AQI_LEVELS)}
