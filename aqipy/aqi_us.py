@@ -8,7 +8,7 @@
 from aqipy.utils import AQI_NOT_AVAILABLE, __round_down, __get_aqi_general_formula_texts, __get_aqi_level
 
 US_AQI = ((0, 50), (51, 100), (101, 150), (151, 200), (201, 300), (301, 500))
-US_AQI_LEVELS = ('good', 'moderate', 'unhealthy_sensitive', 'unhealthy', 'very_unhealthy', 'hazardous')
+US_AQI_LEVELS = ('good', 'moderate', 'unhealthy sensitive', 'unhealthy', 'very unhealthy', 'hazardous')
 US_OZONE_8H = ((0, 0.054), (0.055, 0.070), (0.071, 0.085), (0.086, 0.105), (0.106, 0.200))
 US_OZONE_1H = ((0, 0), (0, 0), (0.125, 0.164), (0.165, 0.204), (0.205, 0.404), (0.405, 0.604))
 US_OZONE_EFFECTS = (
@@ -229,4 +229,4 @@ def get_aqi(co_8h: float = None, o3_1h: float = None, o3_8h: float = None, no2_1
     value = max(list(map(lambda x: x[0], aqi_data.values())))
     if not with_level:
         return value, aqi_data
-    return value, __get_aqi_level(value, US_AQI, US_AQI_LEVELS)
+    return value, {'level': __get_aqi_level(value, US_AQI, US_AQI_LEVELS)}

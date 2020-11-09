@@ -9,7 +9,7 @@ from aqipy.utils import AQI_NOT_AVAILABLE, __round_down, __get_aqi_general_formu
 
 CN_AQI = ((0, 50), (51, 100), (101, 150), (151, 200), (201, 299), (300, 300))
 CN_AQI_LEVELS = (
-'excellent', 'good', 'lightly_polluted', 'moderately_polluted', 'heavily_polluted', 'severely_polluted')
+    'excellent', 'good', 'lightly polluted', 'moderately polluted', 'heavily polluted', 'severely polluted')
 CN_AQI_EFFECTS = (
     "No health implications.",
     "Some pollutants may slightly affect very few hypersensitive individuals.",
@@ -150,4 +150,4 @@ int, {}):
     value = max(list(map(lambda x: x[0], aqi_data.values())))
     if not with_level:
         return value, aqi_data
-    return value, __get_aqi_level(value, CN_AQI, CN_AQI_LEVELS)
+    return value, {'level': __get_aqi_level(value, CN_AQI, CN_AQI_LEVELS)}

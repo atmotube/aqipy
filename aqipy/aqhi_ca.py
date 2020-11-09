@@ -6,10 +6,12 @@
             https://en.wikipedia.org/wiki/Air_Quality_Health_Index_(Canada)
 """
 
+from typing import Union, Tuple
+
 from aqipy.utils import __get_aqi_texts, __added_risk, __get_aqi_level
 
 CA_AQHI = ((1, 3), (4, 6), (7, 10), (11, 11))
-CA_AQHI_LEVELS = ('low', 'moderate', 'high', 'very_high')
+CA_AQHI_LEVELS = ('low', 'moderate', 'high', 'very high')
 
 CA_AQHI_GENERAL = (
     "Ideal air quality for outdoor activities.",
@@ -26,8 +28,8 @@ CA_AQHI_RISK = (
 )
 
 
-def get_aqhi(o3_3h: float, no2_3h: float, pm25_3h: float, pm10_3h: float, with_level: bool = False) -> (
-float, str, str):
+def get_aqhi(o3_3h: float, no2_3h: float, pm25_3h: float, pm10_3h: float, with_level: bool = False) -> Union[
+    Tuple[float, str, str], Tuple[float, dict]]:
     """
     Calculates Canada AQHI
 
@@ -49,4 +51,4 @@ float, str, str):
     text1, text2 = __get_aqi_texts(aqhi, CA_AQHI, CA_AQHI_GENERAL, CA_AQHI_RISK)
     if not with_level:
         return aqhi, text1, text2
-    return aqhi, __get_aqi_level(aqhi, CA_AQHI, CA_AQHI_LEVELS)
+    return aqhi, {'level': __get_aqi_level(aqhi, CA_AQHI, CA_AQHI_LEVELS)}

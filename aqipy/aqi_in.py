@@ -8,7 +8,7 @@
 from aqipy.utils import AQI_NOT_AVAILABLE, __round_down, __get_aqi_general_formula_texts, __get_aqi_level
 
 IN_AQI = ((0, 50), (51, 100), (101, 250), (251, 350), (351, 400), (401, 500))
-IN_AQI_LEVELS = ('good', 'satisfactory', 'moderately_polluted', 'poor', 'very_poor', 'severe')
+IN_AQI_LEVELS = ('good', 'satisfactory', 'moderately polluted', 'poor', 'very poor', 'severe')
 IN_AQI_EFFECTS = (
     "Minimal impact",
     "May cause minor breathing discomfort to sensitive people.",
@@ -157,4 +157,4 @@ def get_aqi(o3_8h: float = None, co_8h: float = None, pm25_24h: float = None,
     value = max(list(map(lambda x: x[0], aqi_data.values())))
     if not with_level:
         return value, aqi_data
-    return value, __get_aqi_level(value, IN_AQI, IN_AQI_LEVELS)
+    return value, {'level': __get_aqi_level(value, IN_AQI, IN_AQI_LEVELS)}

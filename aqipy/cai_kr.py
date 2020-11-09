@@ -8,7 +8,7 @@
 from aqipy.utils import AQI_NOT_AVAILABLE, __round_down, __get_aqi_general_formula_texts, __get_aqi_level
 
 KR_CAI = ((0, 50), (51, 100), (101, 250), (251, 500))
-KR_CAI_LEVELS = ('good', 'moderate', 'unhealthy', 'very_unhealthy')
+KR_CAI_LEVELS = ('good', 'moderate', 'unhealthy', 'very unhealthy')
 KR_O3_1H = ((0, 0.03), (0.031, 0.09), (0.091, 0.15), (0.151, 0.6))
 KR_CO_1H = ((0, 2), (2.01, 9), (9.01, 15), (15.01, 50))
 KR_SO2_1H = ((0, 0.02), (0.021, 0.05), (0.051, 0.15), (0.151, 1))
@@ -124,4 +124,4 @@ def get_aqi(o3_1h: float = None, co_1h: float = None, so2_1h: float = None, no2_
     value = max(list(map(lambda x: x[0], aqi_data.values())))
     if not with_level:
         return value, aqi_data
-    return value, __get_aqi_level(value, KR_CAI, KR_CAI_LEVELS)
+    return value, {'level': __get_aqi_level(value, KR_CAI, KR_CAI_LEVELS)}

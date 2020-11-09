@@ -10,7 +10,7 @@ from aqipy.utils import AQI_NOT_AVAILABLE, __round_down, __get_aqi_general_formu
     __get_aqi_level
 
 UK_AQI = ((1, 3), (4, 6), (7, 9), (10, 10))
-UK_AQI_LEVELS = ('low', 'moderate', 'high', 'very_high')
+UK_AQI_LEVELS = ('low', 'moderate', 'high', 'very high')
 UK_O3_1H = ((0, 16), (17, 33), (34, 50), (51, 60), (61, 70), (71, 80), (81, 93), (94, 106), (107, 120), (121, 121))
 UK_NO2_1H = (
     (0, 35), (36, 71), (72, 106), (107, 142), (143, 177), (178, 212), (213, 248), (249, 284), (285, 319), (320, 320))
@@ -139,4 +139,4 @@ def get_daqi(o3_1h: float = None, no2_1h: float = None, so2_15m: float = None,
     value = max(list(map(lambda x: x[0], aqi_data.values())))
     if not with_level:
         return value, aqi_data
-    return value, __get_aqi_level(value, UK_AQI, UK_AQI_LEVELS)
+    return value, {'level': __get_aqi_level(value, UK_AQI, UK_AQI_LEVELS)}

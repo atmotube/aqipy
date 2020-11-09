@@ -9,7 +9,7 @@
 from aqipy.utils import AQI_NOT_AVAILABLE, __get_aqi_texts, __round_down, __get_aqi_level
 
 AU_AQI = ((0, 33), (34, 66), (67, 99), (100, 149), (150, 200), (201, 201))
-AU_AQI_LEVELS = ('very_good', 'good', 'fair', 'poor', 'very_poor', 'hazardous')
+AU_AQI_LEVELS = ('very good', 'good', 'fair', 'poor', 'very poor', 'hazardous')
 
 AU_AQI_GENERAL = (
     "Enjoy normal activities",
@@ -158,4 +158,4 @@ def get_aqi(o3_1h: float = None, o3_4h: float = None, co_8h: float = None, no2_1
     value = max(list(map(lambda x: x[0], aqi_data.values())))
     if not with_level:
         return value, aqi_data
-    return value, __get_aqi_level(value, AU_AQI, AU_AQI_LEVELS)
+    return value, {'level': __get_aqi_level(value, AU_AQI, AU_AQI_LEVELS)}

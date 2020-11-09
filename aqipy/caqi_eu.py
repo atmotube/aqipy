@@ -8,7 +8,7 @@
 from aqipy.utils import AQI_NOT_AVAILABLE, __round_down, __get_aqi_general_formula, __get_aqi_level
 
 EU_CAQI = ((0, 24), (25, 49), (50, 74), (75, 99), (100, 100))
-EU_CAQI_LEVELS = ('very_low', 'low', 'medium', 'high', 'very_high')
+EU_CAQI_LEVELS = ('very low', 'low', 'medium', 'high', 'very high')
 EU_NO2_1H = ((0, 26), (27, 52), (53, 105), (106, 212), (213, 213))
 EU_PM10_1H = ((0, 24), (25, 49), (50, 89), (90, 179), (180, 180))
 EU_PM10_24H = ((0, 14), (15, 29), (30, 49), (50, 99), (100, 100))
@@ -148,4 +148,4 @@ def get_caqi(co_1h: float = None, o3_max_1h: float = None, no2_max_1h: float = N
     value = max(list(map(lambda x: x, aqi_data.values())))
     if not with_level:
         return value, aqi_data
-    return value, __get_aqi_level(value, EU_CAQI, EU_CAQI_LEVELS)
+    return value, {'level': __get_aqi_level(value, EU_CAQI, EU_CAQI_LEVELS)}

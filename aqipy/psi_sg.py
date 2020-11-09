@@ -137,4 +137,4 @@ def get_aqi(o3_8h: float = None, no2_1h: float = None, so2_24h: float = None,
     value = max(list(map(lambda x: x[0], aqi_data.values())))
     if not with_level:
         return value, aqi_data
-    return value, __get_aqi_level(value, SG_PSI, SG_PSI_LEVELS)
+    return value, {'level': __get_aqi_level(value, SG_PSI, SG_PSI_LEVELS)}
