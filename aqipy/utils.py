@@ -45,7 +45,6 @@ def __get_aqi_general_formula_texts(cp: float, av: [], a1: [], a2: [], aqi_a: []
     if max_aqi == 0:
         max_aqi = aqi_a[-1][1]
     t, i, bp = __get_index_data(cp, av, max_aqi, aqi_a)
-    print(bp)
     if t == len(aqi_a):
         text1, text2 = __get_aqi_texts(max_aqi, aqi_a, a1, a2)
         return max_aqi, text1, text2
