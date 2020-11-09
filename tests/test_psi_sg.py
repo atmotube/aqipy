@@ -21,8 +21,7 @@ def test_get_psi_ozone_8h():
 
 def test_division_by_zero():
     aqi, aqi_data = psi_sg.get_aqi(no2_1h=0.0001)
-    assert aqi
-    assert aqi_data
+    assert aqi == -1
 
 
 def test_labels():
