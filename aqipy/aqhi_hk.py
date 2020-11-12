@@ -61,9 +61,14 @@ def get_aqhi(o3_3h: float, no2_3h: float, so2_3h: float, pm25_3h: float, pm10_3h
     if any(value is None for value in (o3_3h, no2_3h, so2_3h, pm10_3h, pm25_3h)):
         return AQI_NOT_AVAILABLE, "", ""
     betas = [0.0004462559, 0.0001393235, 0.0005116328, 0.0002821751, 0.0002180567]
+    if so2_3h == 0:
+        so2_3h = 0.020  # normal level - to make formula work without SO2
     c = [no2_3h * 1000 * NO2_PPB_UGM3, so2_3h * 1000 * SO2_PPB_UGM3, o3_3h * 1000 * O3_PPB_UGM3, pm10_3h, pm25_3h]
     ars = list(map(__added_risk, betas, c))
     ar_total = sum(ars[0:3]) + max(ars[3:5])
-    aqhi = max(1, min(len(HK_AR), round(ar_total)))
+    aqhi = len(HK_AR)
+    for i in range(len(HK_AR)):
+        if HK_AR[i][0] <= ar_total <= HK_AR[i][1]:
+            aqhi = i + 1
     text1, text2 = __get_aqi_texts(aqhi, HK_AR, HK_AQHI_GENERAL, HK_AQHI_RISK)
     return aqhi, text1, text2
