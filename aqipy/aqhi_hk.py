@@ -7,12 +7,17 @@
             https://www.gov.hk/en/residents/environment/air/aqhi.htm
 """
 
-from aqipy.utils import AQI_NOT_AVAILABLE, __get_aqi_texts, __added_risk
+from typing import Union, Tuple
+
+from aqipy.utils import AQI_NOT_AVAILABLE, __get_aqi_texts, __added_risk, __get_aqi_level
 
 HK_AR = (
     (0.00, 1.87), (1.88, 3.76), (3.76, 5.63), (5.64, 7.51), (7.52, 9.40), (9.41, 11.28), (11.29, 12.90), (12.91, 15.06),
     (15.07, 17.21), (17.22, 19.36), (19.37, 19.37)
 )
+
+HK_AQHI = ((1, 3), (4, 6), (7, 7), (8, 10), (11, 11))
+HK_AQHI_LEVELS = ('low', 'moderate', 'high', 'very high', 'serious')
 
 HK_AQHI_GENERAL = (
     "No response action is required.",
@@ -47,7 +52,8 @@ SO2_PPB_UGM3 = 2.62
 O3_PPB_UGM3 = 2
 
 
-def get_aqhi(o3_3h: float, no2_3h: float, so2_3h: float, pm25_3h: float, pm10_3h: float) -> (float, str, str):
+def get_aqhi(o3_3h: float, no2_3h: float, so2_3h: float, pm25_3h: float, pm10_3h: float, with_level: bool = False) -> \
+        Union[Tuple[int, str, str], Tuple[int, dict]]:
     """
     Calculates Hong Kong AQHI
 
@@ -56,6 +62,7 @@ def get_aqhi(o3_3h: float, no2_3h: float, so2_3h: float, pm25_3h: float, pm10_3h
     :param so2_3h: SO2 average (3h), ppm
     :param pm25_3h: PM2.5 average (3h), μg/m3
     :param pm10_3h: PM10 average (3h), μg/m3
+    :param with_level: Boolean distinguishing whether to print AQI level such as 'good' or 'hazardous'
     :return: Hong Kong AQHI, Effect message, Caution message
     """
     if any(value is None for value in (o3_3h, no2_3h, so2_3h, pm10_3h, pm25_3h)):
@@ -71,4 +78,6 @@ def get_aqhi(o3_3h: float, no2_3h: float, so2_3h: float, pm25_3h: float, pm10_3h
         if HK_AR[i][0] <= ar_total <= HK_AR[i][1]:
             aqhi = i + 1
     text1, text2 = __get_aqi_texts(aqhi, HK_AR, HK_AQHI_GENERAL, HK_AQHI_RISK)
-    return aqhi, text1, text2
+    if not with_level:
+        return aqhi, text1, text2
+    return aqhi, {'level': __get_aqi_level(aqhi, HK_AQHI, HK_AQHI_LEVELS)}
